@@ -7,6 +7,7 @@ import { MdStorefront } from "react-icons/md";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { MdOutlineBuild } from "react-icons/md";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { MdOutlineLogout } from "react-icons/md";
 import { BsStars } from "react-icons/bs";
 import { useRouter } from 'next/router'
 
@@ -77,6 +78,11 @@ const LeftBar = ({selected}) => {
                         Ask Droidviser
                     </MenuItemAsk>
                 </Nav>
+
+                <Logout>
+                    <LogoutIcon />
+                    Logout
+                </Logout>
             </MainColumn>
         </Section>
     )
@@ -192,7 +198,6 @@ pointer-events: ${({ selected }) => (selected ? 'none' : 'auto')};
 color: ${COLORS.Black500};
 }
 `
-
 const MarketplaceIcon = styled(MdStorefront)`
 fill: ${({ selected }) => (selected ? COLORS.DartmouthGreen600 : COLORS.Black700)};
 transition: 0.4s ease-in-out;
@@ -228,9 +233,31 @@ ${MenuItem}:hover & {
 fill: ${COLORS.Black500};
 }
 `
-
 const Logout = styled.div`
+display: flex;
+align-items: center;
+gap: ${SIZING.px8};
+font-size: ${SIZING.px16};
+letter-spacing: -0.05rem;
+font-family: "Uncut Sans Medium";
+color: ${COLORS.Black700};
+transition: 0.4s ease-in-out;
+cursor: pointer;
 
+&:hover{
+color: ${COLORS.Black500};
+}
+`
+const LogoutIcon = styled(MdOutlineLogout)`
+font-size: ${SIZING.px16};
+fill: ${COLORS.Black700};
+-webkit-transform: scaleX(-1);
+transform: scaleX(-1);
+transition: 0.4s ease-in-out;
+
+${Logout}:hover & {
+fill: ${COLORS.Black500};
+}
 `
 
 

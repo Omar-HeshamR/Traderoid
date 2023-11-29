@@ -1,11 +1,17 @@
-import { ThirdwebProvider, metamaskWallet, coinbaseWallet, walletConnect, localWallet, 
-  embeddedWallet} from "@thirdweb-dev/react";
+import { ThirdwebProvider, metamaskWallet, 
+coinbaseWallet, walletConnect, localWallet, 
+embeddedWallet} from "@thirdweb-dev/react";
 import { createGlobalStyle } from 'styled-components'
+import { COLORS } from "@/library/theme";
+
 
 export const GlobalStyle = createGlobalStyle`
   * 
   {
-    font-family: "Inter";
+    font-size: 1.157vw;
+    line-height: 100%;
+    font-family: "Uncut Sans Regular";
+    color: ${COLORS.StandardWhiteDefault};
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -17,6 +23,31 @@ export const GlobalStyle = createGlobalStyle`
     a {
       color: inherit; 
       text-decoration: none; 
+    }
+
+    @font-face {
+      font-family: "Uncut Sans Bold";
+      src: url("/fonts/UncutSans/Bold.otf");
+    }
+    @font-face {
+      font-family: "Uncut Sans Book";
+      src: url("/fonts/UncutSans/Book.otf");
+    }
+    @font-face {
+      font-family: "Uncut Sans Light";
+      src: url("/fonts/UncutSans/Light.otf");
+    }
+    @font-face {
+      font-family: "Uncut Sans Medium";
+      src: url("/fonts/UncutSans/Medium.otf");
+    }
+    @font-face {
+      font-family: "Uncut Sans Regular";
+      src: url("/fonts/UncutSans/Regular.otf");
+    }
+    @font-face {
+      font-family: "Uncut Sans Semibold";
+      src: url("/fonts/UncutSans/Semibold.otf");
     }
   }
 `

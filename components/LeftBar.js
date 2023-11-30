@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import TopLeftLogo from './TopLeftLogo'
 import { COLORS } from '@/library/theme'
 import { SIZING } from '@/library/sizing'
+import { LeftBarTrademarkText } from '@/library/typography';
 import { MdStorefront } from "react-icons/md";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { MdOutlineBuild } from "react-icons/md";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
-import { MdOutlineLogout } from "react-icons/md";
 import { BsStars } from "react-icons/bs";
 import { useRouter } from 'next/router'
 
@@ -50,39 +50,38 @@ const LeftBar = ({selected}) => {
                             Marketplace
                         </MenuItemTop>
                         <MenuItem onClick={goToMyPortfolio}
-                        selected={selected === 'portfolio'}>
+                        selected={selected === 'myPortfolio'}>
                             <MyPortfolioIcon 
-                            selected={selected === 'portfolio'}/>
+                            selected={selected === 'myPortfolio'}/>
                             My portfolio
                         </MenuItem>
                         <MenuItem onClick={goToMyBots}
-                        selected={selected === 'bots'}
+                        selected={selected === 'myBots'}
                         >
                             <MyBotsIcon 
-                            selected={selected === 'bots'}/>
+                            selected={selected === 'myBots'}/>
                             My bots
                         </MenuItem>
                         <MenuItemBottom onClick={goToCreateABot}
-                        selected={selected === 'create'}>
+                        selected={selected === 'createABot'}>
                             <CreateABotIcon 
-                            selected={selected === 'create'}
+                            selected={selected === 'createABot'}
                             />
                             Create a bot
                         </MenuItemBottom>
                     </Menu>
                     <MenuItemAsk onClick={goToAskDroidviser}
-                    selected={selected === 'ask'}>
+                    selected={selected === 'askDroidviser'}>
                         <AskDroidviserIcon 
-                        selected={selected === 'ask'}
+                        selected={selected === 'askDroidviser'}
                         />
                         Ask Droidviser
                     </MenuItemAsk>
                 </Nav>
 
-                <Logout>
-                    <LogoutIcon />
-                    Logout
-                </Logout>
+                <LeftBarTrademarkText>
+                    Powered by Avalanche and Chainlink
+                </LeftBarTrademarkText>             
             </MainColumn>
         </Section>
     )
@@ -98,7 +97,7 @@ height: 100%;
 const LogoContainer = styled.div`
 display: flex;
 align-items: center;
-padding: 0 ${SIZING.px40};
+padding: 0 ${SIZING.px32};
 height: ${SIZING.px96};
 `
 const MainColumn = styled.div`
@@ -106,9 +105,9 @@ display: flex;
 flex-direction: column;
 justify-content: space-between;
 height: calc(100% - ${SIZING.px96});
-padding-left: ${SIZING.px40};
-padding-right: ${SIZING.px40};
-padding-bottom: ${SIZING.px40};
+padding-left: ${SIZING.px32};
+padding-right: ${SIZING.px32};
+padding-bottom: ${SIZING.px32};
 `
 const Nav = styled.nav`
 display: flex;
@@ -233,32 +232,7 @@ ${MenuItem}:hover & {
 fill: ${COLORS.Black500};
 }
 `
-const Logout = styled.div`
-display: flex;
-align-items: center;
-gap: ${SIZING.px8};
-font-size: ${SIZING.px16};
-letter-spacing: -0.05rem;
-font-family: "Uncut Sans Medium";
-color: ${COLORS.Black700};
-transition: 0.4s ease-in-out;
-cursor: pointer;
 
-&:hover{
-color: ${COLORS.Black500};
-}
-`
-const LogoutIcon = styled(MdOutlineLogout)`
-font-size: ${SIZING.px16};
-fill: ${COLORS.Black700};
--webkit-transform: scaleX(-1);
-transform: scaleX(-1);
-transition: 0.4s ease-in-out;
-
-${Logout}:hover & {
-fill: ${COLORS.Black500};
-}
-`
 
 
 export default LeftBar

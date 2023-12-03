@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import { COLORS } from '@/library/theme'
 import { SIZING } from '@/library/sizing'
@@ -7,6 +7,7 @@ import { BotCardManager, BotCardName, BotCardTag,
 BotCardAssetsText, BotCardDescription, BotCardFeeRate, 
 BotCardFeeLabel} from '@/library/typography'
 import InvestButton from './InvestButton'
+import InvestModal from './InvestModal'
 
 const getRandomProfitLossRatio = () => {
     const randomNumber = (Math.random() * 200) - 100;
@@ -14,71 +15,92 @@ const getRandomProfitLossRatio = () => {
     return roundedNumber;
 };
 
-const BotCard = ({bot_object}) => {
+const BotCard = ({bot_object, myPortfolio, myBots}) => {
 
-  const profit_loss_ratio = getRandomProfitLossRatio();
+    const [profitLossRatio, setProfitLossRatio] = useState(0); 
+
+    useEffect(() => {
+      setProfitLossRatio(getRandomProfitLossRatio());
+    }, []);
 
   return (
-    <Container>
-        <TopContainer>
-            <UppermostRow>
-                <BotCardManager>
-                    @{bot_object.manager}
-                </BotCardManager>
-                <ProfitLossRatio color={profit_loss_ratio >= 0 ? COLORS.PigmentGreen600 : COLORS.PersianRed500}>
-                    {profit_loss_ratio >= 0 ? `+ ${profit_loss_ratio.toFixed(2)}% P/L` : `- ${Math.abs(profit_loss_ratio).toFixed(2)}% P/L`}
-                </ProfitLossRatio>
-            </UppermostRow>
-            <BotCardName>
-                {bot_object.name}
-            </BotCardName>
-            <TagRow>
-                {bot_object.tags.map((tag, index) => (
-                    <BotCardTag key={index}>{tag}</BotCardTag>
-                ))}
-            </TagRow>
-        </TopContainer>
-        <DividingLine />
-        <BottomContainer>
-            <AssetsRow>
-                <BotCardAssetsText>
-                    Assets:
-                </BotCardAssetsText>
-                <AssetImagesRow>
-                    {bot_object.assets.map((asset, index) => (
-                        <Image
-                        key={index}
-                        src={asset.src}
-                        alt={`Asset ${index}`}
-                        width={asset.width}
-                        height={asset.height}
-                        />
+    <>      
+        <Container>
+            <TopContainer>
+                <UppermostRow>
+                    <BotCardManager>
+                        @{bot_object.manager}
+                    </BotCardManager>
+                    <ProfitLossRatio color={profitLossRatio >= 0 ? COLORS.PigmentGreen600 : COLORS.PersianRed500}>
+                        {profitLossRatio >= 0 ? `+ ${profitLossRatio.toFixed(2)}% P/L` : `- ${Math.abs(profitLossRatio).toFixed(2)}% P/L`}
+                    </ProfitLossRatio>
+                </UppermostRow>
+                <BotCardName>
+                    {bot_object.name}
+                </BotCardName>
+                <TagRow>
+                    {bot_object.tags.map((tag, index) => (
+                        <BotCardTag key={index}>{tag}</BotCardTag>
                     ))}
-                </AssetImagesRow>
-            </AssetsRow>
-            <BotCardDescription>
-                {bot_object.description}
-            </BotCardDescription>
-            <BottommostRow>
-                <FeeColumn>
-                    <BotCardFeeLabel>
-                        Management Fee: &nbsp;
-                        <BotCardFeeRate>
-                            {bot_object.management_fee}
-                        </BotCardFeeRate>
-                    </BotCardFeeLabel>
-                    <BotCardFeeLabel>
-                        Processing Fee: &nbsp;
-                        <BotCardFeeRate>
-                            {bot_object.processing_fee}
-                        </BotCardFeeRate>
-                    </BotCardFeeLabel>
-                </FeeColumn>
-                <InvestButton />
-            </BottommostRow>
+                </TagRow>
+            </TopContainer>
+            <DividingLine />
+            <BottomContainer>
+                {!myPortfolio && (
+                    <AssetsRow>
+                        <BotCardAssetsText>
+                            Assets:
+                        </BotCardAssetsText>
+                        <AssetImagesRow>
+                            {bot_object.assets.map((asset, index) => (
+                                <Image
+                                    key={index}
+                                    src={asset.src}
+                                    alt={`Asset ${index}`}
+                                    width={asset.width}
+                                    height={asset.height}
+                                />
+                            ))}
+                        </AssetImagesRow>
+                    </AssetsRow>
+                )}
+                <BotCardDescription>
+                    {bot_object.description}
+                </BotCardDescription>
+                <BottommostRow>
+                    {!myPortfolio && !myBots && (
+                        <FeeColumn>
+                            <BotCardFeeLabel>
+                                Management Fee: &nbsp;
+                                <BotCardFeeRate>
+                                    {bot_object.management_fee}
+                                </BotCardFeeRate>
+                            </BotCardFeeLabel>
+                            <BotCardFeeLabel>
+                                Processing Fee: &nbsp;
+                                <BotCardFeeRate>
+                                    {bot_object.performance_fee}
+                                </BotCardFeeRate>
+                            </BotCardFeeLabel>
+                        </FeeColumn>
+                    )}
+                    {myPortfolio && (
+                        <>
+                        <InvestButton withdraw/>
+                        <InvestButton investMore/>
+                        </>
+                    )}
+                    {!myPortfolio && !myBots && (
+                        <InvestButton />
+                    )}
+                    {myBots && (
+                        <InvestButton myBots/>
+                    )}
+                </BottommostRow>
 
-        </BottomContainer>
-    </Container>
+            </BottomContainer>
+        </Container>
+    </>
   )
 }
 

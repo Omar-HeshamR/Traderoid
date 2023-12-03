@@ -9,7 +9,7 @@ import { MdOutlineNotifications } from "react-icons/md";
 import { ConnectWallet, ThirdwebProvider, useWallet, useAddress } from '@thirdweb-dev/react'
 
 
-const TopBar = ({header}) => {
+const TopBar = ({header, type}) => {
 
   const isConnected = Boolean(useAddress() != undefined);
   console.log(isConnected)
@@ -22,12 +22,14 @@ const TopBar = ({header}) => {
 
         <LeftContainer>
 
-            <FilterResults>
-                <TopBarFilterText>
-                    Recent
-                </TopBarFilterText>
-                <FilterArrowIcon />
-            </FilterResults>
+            {type && (
+                <FilterResults>
+                    <TopBarFilterText>
+                        Recent
+                    </TopBarFilterText>
+                    <FilterArrowIcon />
+                </FilterResults>
+            )}
 
             <SearchWrapper>
                 <SearchIcon />

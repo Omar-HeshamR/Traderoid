@@ -1,7 +1,9 @@
 export const SIZING = {
 px2: "0.125rem",
 px4: "0.25rem",
+px6: "0.375rem",
 px8: "0.5rem",
+px10: "0.625rem",
 px12: "0.75rem",
 px14: "0.875rem",
 px16: "1rem",
@@ -12,7 +14,11 @@ px36: "2.25rem",
 px40: "2.5rem",
 px48: "3rem",
 px64: "4rem",
+px80: "5rem",
 px96: "6rem",
+px128: "8rem",
 px256: "16rem",
-
+px352: "22rem",
+px416: "26rem",
+px480: "30rem"
 }

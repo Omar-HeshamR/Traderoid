@@ -17,8 +17,10 @@ DartmouthGreen600: 'rgba(77, 199, 160, 1)',
 DartmouthGreen800: 'rgba(24, 149, 110, 1)',
 DartmouthGreen900Default: 'rgba(11, 110, 79, 1)',
 
+PersianRed100: 'rgba(255, 245, 246, 1)',
 PersianRed500: 'rgba(209, 87, 97, 1)',
 PersianRed600Default: 'rgba(204, 41, 54, 1)',
+// PersianRed900: 'rgba(90, 1, 9, 1)',
 
 PigmentGreen500: 'rgba(51, 219, 118, 1)',
 PigmentGreen600: 'rgba(22, 197, 92, 1)',

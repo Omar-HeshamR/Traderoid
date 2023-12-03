@@ -1,10 +1,6 @@
-import React from 'react'
+import React, {useState} from 'react'
 import LeftBar from '@/components/LeftBar'
 import TopBar from '@/components/TopBar'
-import styled from 'styled-components'
-import Image from 'next/image'
-import { COLORS } from '@/library/theme'
-import { SIZING } from '@/library/sizing'
 import {Section, ScrollableContainer, CardGrid} from '@/library/structure'
 import BotCard from '@/components/BotCard'
 import Bitcoin from '@/public/images/assets/Bitcoin.webp'
@@ -13,8 +9,12 @@ import LINK from '@/public/images/assets/LINK.webp'
 import MANA from '@/public/images/assets/MANA.webp'
 import MATIC from '@/public/images/assets/MATIC.webp'
 import UNI from '@/public/images/assets/UNI.webp'
+import InvestModal from '@/components/InvestModal'
+import WithdrawModal from '@/components/WithdrawModal'
+
 
 const Marketplace = () => {
+
 
   const botObjects = [
     {
@@ -32,7 +32,7 @@ const Marketplace = () => {
       occaecat cupidatat non proident, sunt in culpa qui officia 
       deserunt mollit anim id est laborum.`,
       management_fee: '11.99%',
-      processing_fee: '11.99%',
+      performance_fee: '11.99%',
     },
     {
       manager: 'farukkandemir11',
@@ -49,7 +49,7 @@ const Marketplace = () => {
       occaecat cupidatat non proident, sunt in culpa qui officia 
       deserunt mollit anim id est laborum.`,
       management_fee: '12.00%',
-      processing_fee: '11.99%',
+      performance_fee: '11.99%',
     },
     {
       manager: 'farukkandemir585',
@@ -66,7 +66,7 @@ const Marketplace = () => {
       occaecat cupidatat non proident, sunt in culpa qui officia 
       deserunt mollit anim id est laborum.`,
       management_fee: '1.97%',
-      processing_fee: '11.99%',
+      performance_fee: '11.99%',
     },
     {
       manager: 'farukkandemir999',
@@ -83,7 +83,7 @@ const Marketplace = () => {
       occaecat cupidatat non proident, sunt in culpa qui officia 
       deserunt mollit anim id est laborum.`,
       management_fee: '14.91%',
-      processing_fee: '11.99%',
+      performance_fee: '11.99%',
     },
     {
       manager: 'farukkandemir11',
@@ -100,7 +100,7 @@ const Marketplace = () => {
       occaecat cupidatat non proident, sunt in culpa qui officia 
       deserunt mollit anim id est laborum.`,
       management_fee: '2.85%',
-      processing_fee: '11.99%',
+      performance_fee: '11.99%',
     },
     {
       manager: 'farukkandemir585',
@@ -117,7 +117,7 @@ const Marketplace = () => {
       occaecat cupidatat non proident, sunt in culpa qui officia 
       deserunt mollit anim id est laborum.`,
       management_fee: '3.11%',
-      processing_fee: '11.99%',
+      performance_fee: '11.99%',
     },
     {
       manager: 'farukkandemir999',
@@ -134,7 +134,7 @@ const Marketplace = () => {
       occaecat cupidatat non proident, sunt in culpa qui officia 
       deserunt mollit anim id est laborum.`,
       management_fee: '3.17%',
-      processing_fee: '11.99%',
+      performance_fee: '11.99%',
     },
     {
       manager: 'farukkandemir11',
@@ -151,7 +151,7 @@ const Marketplace = () => {
       occaecat cupidatat non proident, sunt in culpa qui officia 
       deserunt mollit anim id est laborum.`,
       management_fee: '4.80%',
-      processing_fee: '11.99%',
+      performance_fee: '11.99%',
     },
     {
       manager: 'farukkandemir585',
@@ -168,7 +168,7 @@ const Marketplace = () => {
       occaecat cupidatat non proident, sunt in culpa qui officia 
       deserunt mollit anim id est laborum.`,
       management_fee: '10.11%',
-      processing_fee: '11.99%',
+      performance_fee: '11.99%',
     },
   ];
 
@@ -179,7 +179,7 @@ const Marketplace = () => {
 
       <ScrollableContainer>
 
-        <TopBar header="Explore trending bots"/>
+        <TopBar header="Explore trending bots" type="filter"/>
 
         <CardGrid>
           {botObjects.map((botObject, index) => (
@@ -188,6 +188,10 @@ const Marketplace = () => {
         </CardGrid>
 
       </ScrollableContainer>
+
+      {/* <InvestModal/> */}
+
+      <WithdrawModal />
 
     </Section>
   )

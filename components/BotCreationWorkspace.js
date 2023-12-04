@@ -8,7 +8,7 @@ BotCreationWorkspaceDragAndDropYourScriptSpan, BotCreationWorkspaceOrSpan,
 BotCreationWorkspaceAffirmationSpan, BotCreationWorkspaceFileNameSpan } from '@/library/typography'
 import { MdClose } from "react-icons/md";
 import { MdCloudUpload } from "react-icons/md";
-import { useStorage } from "@thirdweb-dev/react";
+import { useStorage, useAddress, useSigner } from '@thirdweb-dev/react';
 import { ethers } from 'ethers';
 import TradioABI from "@/contracts/abi/TraderoidABI.json"
 import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
@@ -27,19 +27,17 @@ const BotCreationWorkspace = () => {
   const [fileText, setFileText] = useState('');
 
   const storage = useStorage();
+  const userAddress = useAddress();
+  const signer = useSigner();
 
   const [isMinting, setIsMinting] = useState(false)
   const [mintMessege, setMintMessege] = useState('')
   async function handleNFTmint(){
     setIsMinting(true)
     try{
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    const address = await signer.getAddress();
     const metadeta = {
         name: botName,
-        manager: address,
+        manager: userAddress,
         tags: selectedTags,
         description: description,
         assets: selectedAssets,

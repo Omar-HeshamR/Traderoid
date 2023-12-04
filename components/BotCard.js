@@ -14,8 +14,13 @@ import MATIC from '@/public/images/assets/MATIC.webp'
 import UNI from '@/public/images/assets/UNI.webp'
 import InvestButton from './InvestButton'
 import { useStateContext } from '@/context/StateContext';
+import { useAddress } from '@thirdweb-dev/react';
 
-const BotCard = ({bot_object, myPortfolio, myBots}) => {
+const BotCard = ({ bot_object, myPortfolio }) => {
+
+    // MAIN VARIBLES
+    const userAddress = useAddress();
+    const myBots = Boolean(bot_object.manger == userAddress)
     
     const cryptoImages = {
         "BTC": BTC,
@@ -26,9 +31,7 @@ const BotCard = ({bot_object, myPortfolio, myBots}) => {
         "MATIC": MATIC,
         "UNI": UNI,
     };
-
     const [profitLossRatio, setProfitLossRatio] = useState(0); 
-
     useEffect(() => {
       setProfitLossRatio(getRandomProfitLossRatio());
     }, []);

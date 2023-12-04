@@ -1,81 +1,40 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import LeftBar from '@/components/LeftBar'
 import TopBar from '@/components/TopBar'
 import {Section, ScrollableContainer, CardGrid} from '@/library/structure'
 import BotCard from '@/components/BotCard'
+import TradioABI from "@/contracts/abi/TraderoidABI.json"
+import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
+import { useStorage, useAddress, useSigner } from '@thirdweb-dev/react';
+import { ethers } from 'ethers';
 
 const MyBots = () => {
 
-  const botObjects = [
-    {
-      manager: 'farukkandemir999',
-      name: 'MusaBot Pro',
-      tags: ['Yazdan', 'Abdel', 'Majid', 'Stephen'],
-      assets: ["BTC", "MANA", "MATIC", "ETH"],
-      description:
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-      sed do eiusmod tempor incididunt ut labore et dolore magna 
-      aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-      ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit 
-      esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
-      occaecat cupidatat non proident, sunt in culpa qui officia 
-      deserunt mollit anim id est laborum.`,
-      ManagementFee: '11.99%',
-      PerformanceFee: '11.99%',
-    },
-    {
-      manager: 'farukkandemir11',
-      name: 'Musaka Pro',
-      tags: ['Musa', 'Elsaid', 'Nasser'],
-      assets: ["LINK", "MANA", "UNI", "ETH"],
-      description:
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-      sed do eiusmod tempor incididunt ut labore et dolore magna 
-      aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-      ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit 
-      esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
-      occaecat cupidatat non proident, sunt in culpa qui officia 
-      deserunt mollit anim id est laborum.`,
-      ManagementFee: '12.00%',
-      PerformanceFee: '11.99%',
-    },
-    {
-      manager: 'farukkandemir585',
-      name: 'Mahmuti',
-      tags: ['Tweaker', 'Digital', 'Publication', 'Research'],
-      assets: ["BTC", "MANA", "UNI", "ETH"],
-      description:
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-      sed do eiusmod tempor incididunt ut labore et dolore magna 
-      aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-      ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit 
-      esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
-      occaecat cupidatat non proident, sunt in culpa qui officia 
-      deserunt mollit anim id est laborum.`,
-      ManagementFee: '1.97%',
-      PerformanceFee: '11.99%',
-    },
-    {
-      manager: 'farukkandemir999',
-      name: 'Speedy Need',
-      tags: ['Yazdan', 'Abdel', 'Majid', 'Stephen'],
-      assets: ["BTC", 'MANA', "MATIC", "ETH"],
-      description:
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-      sed do eiusmod tempor incididunt ut labore et dolore magna 
-      aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-      ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit 
-      esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
-      occaecat cupidatat non proident, sunt in culpa qui officia 
-      deserunt mollit anim id est laborum.`,
-      ManagementFee: '14.91%',
-      PerformanceFee: '11.99%',
-    },
-  ];
+  const [nftData, setNftData] = useState([]);
+  const storage = useStorage();
+  const userAddress = useAddress();
+  const signer = useSigner();
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+        if(!signer){return}
+        const contract = new ethers.Contract(Traderiod_NFT_CONTRACT_ADDRESS, TradioABI, signer);
+        const tokenURIs = await contract.getAllTokenURIs(); // Replace with your contract's method
+        const dataPromises = tokenURIs.map(async (uri, index) => {
+          const data = await storage.download(uri);
+          const metadataResponse = await fetch(data.url);
+          const botWalletAddress = await contract.BotsWalletAddresses(index);
+          const metadata = await metadataResponse.json();
+          metadata.walletAddress = botWalletAddress;
+          return metadata;
+        });
+        const results = await Promise.all(dataPromises);
+        const filtredResults = results.filter(metadata => metadata.manager === userAddress)//logiv here
+        setNftData(filtredResults);
+        console.log(results)
+    }
+    asyncFunc()
+  }, [signer])
 
   return (
     <Section>
@@ -87,8 +46,8 @@ const MyBots = () => {
         <TopBar header="Bots you've created"/>
 
         <CardGrid>
-          {botObjects.map((botObject, index) => (
-              <BotCard bot_object={botObject} key={index} myBots/>
+          {nftData.map((botObject, index) => (
+              <BotCard bot_object={botObject} key={index} />
           ))}
         </CardGrid>
 

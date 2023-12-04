@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { COLORS } from '@/library/theme';
 import { SIZING } from '@/library/sizing';
@@ -8,15 +8,29 @@ ModalTotalAvalancheNumber } from '@/library/typography';
 import { MdClose, MdOutlineAutoGraph } from 'react-icons/md';
 import Image from 'next/image';
 import AvalancheLogo from '@/public/images/AvalancheLogo.webp'
+import { useStateContext } from '@/context/StateContext';
+import { useBalance } from "@thirdweb-dev/react";
+import { NATIVE_TOKEN_ADDRESS } from "@thirdweb-dev/sdk";
 
-const InvestModal = ({}) => {
+const InvestModal = () => {
   
+  const { data: balance, isLoading } = useBalance(NATIVE_TOKEN_ADDRESS);
+  const {showInvestModal, setShowInvestModal} = useStateContext();
+  const [ invesmentAmount, setInvesmentAmount ] = useState(0.00)
+  const [ amountInUSD, setAmountInUSD ] = useState(0.00);
+
+  useEffect(() => {
+    setAmountInUSD(parseFloat(invesmentAmount * 22.14))
+  }, [invesmentAmount])
+
   return (
+    <>
+    {showInvestModal &&
     <Background>
         <ModalBody>
         <TopBanner>
             <ModalTopBannerHeader>Invest in MusaBot</ModalTopBannerHeader>
-            <CloseIcon/>
+            <CloseIcon onClick={() => setShowInvestModal(false)}/>
         </TopBanner>
 
         <BottomContent>
@@ -26,8 +40,10 @@ const InvestModal = ({}) => {
                 </ModalInputLabel>
                 <InputWrapper>
                 <Input  
-                    placeholder=""
-                    type="text"
+                    value={invesmentAmount}
+                    onChange={(e) => setInvesmentAmount(e.target.value)}
+                    placeholder="00.0"
+                    type="number"
                     />
                 <Image src={AvalancheLogo} alt="Avalanche" />
                 </InputWrapper>
@@ -39,7 +55,7 @@ const InvestModal = ({}) => {
                         Your remaining Avalanche balance:
                     </ModalTotalAvalancheSpan>
                     <ModalTotalAvalancheNumber>
-                        304.29
+                        {parseFloat(balance.displayValue).toFixed(3)}
                     </ModalTotalAvalancheNumber>
                 </TotalAmountRow>
 
@@ -48,7 +64,7 @@ const InvestModal = ({}) => {
                         Your total investment amount in USD:
                     </ModalTotalAmountSpan>
                     <ModalTotalAmountNumber>
-                        $ 1,356.90
+                        $ {amountInUSD.toFixed(2)}
                     </ModalTotalAmountNumber>
                 </TotalAmountRow>
             </TotalAmountColumn>
@@ -60,6 +76,7 @@ const InvestModal = ({}) => {
         </BottomContent>
         </ModalBody>
     </Background>
+    }</>
   );
 };
 
@@ -74,6 +91,7 @@ right: 0;
 bottom: 0;
 background-color: rgba(20, 20, 20, 0.75);
 backdrop-filter: blur(${SIZING.px2});
+z-index: 10;
 `
 const ModalBody = styled.div`
 display: flex;
@@ -82,6 +100,7 @@ width: ${SIZING.px480};
 background-color: ${COLORS.Black850};
 border-radius: ${SIZING.px16};
 overflow: clip;
+z-index: 11;
 `
 const TopBanner = styled.div`
 display: flex;

@@ -6,16 +6,25 @@ import Image from 'next/image'
 import { BotCardManager, BotCardName, BotCardTag, 
 BotCardAssetsText, BotCardDescription, BotCardFeeRate, 
 BotCardFeeLabel} from '@/library/typography'
+import BTC from '@/public/images/assets/Bitcoin.webp'
+import ETH from '@/public/images/assets/ETH.webp'
+import LINK from '@/public/images/assets/LINK.webp'
+import MANA from '@/public/images/assets/MANA.webp'
+import MATIC from '@/public/images/assets/MATIC.webp'
+import UNI from '@/public/images/assets/UNI.webp'
 import InvestButton from './InvestButton'
-import InvestModal from './InvestModal'
-
-const getRandomProfitLossRatio = () => {
-    const randomNumber = (Math.random() * 200) - 100;
-    const roundedNumber = Math.round(randomNumber * 100) / 100;
-    return roundedNumber;
-};
+import { useStateContext } from '@/context/StateContext';
 
 const BotCard = ({bot_object, myPortfolio, myBots}) => {
+    
+    const cryptoImages = {
+        "BTC": BTC,
+        "ETH": ETH,
+        "LINK": LINK,
+        "MANA": MANA,
+        "MATIC": MATIC,
+        "UNI": UNI,
+    };
 
     const [profitLossRatio, setProfitLossRatio] = useState(0); 
 
@@ -23,13 +32,26 @@ const BotCard = ({bot_object, myPortfolio, myBots}) => {
       setProfitLossRatio(getRandomProfitLossRatio());
     }, []);
 
+    // HELPER FUNCTIONS
+    const getRandomProfitLossRatio = () => {
+        const randomNumber = (Math.random() * 200) - 50;
+        const roundedNumber = Math.round(randomNumber * 100) / 100;
+        return roundedNumber;
+    };   
+    function truncateString(str) {
+        if (str.length <= 13) {
+            return str;
+        }
+        return str.substr(0, 8) + '...' + str.substr(-8);
+    }
+
   return (
     <>      
         <Container>
             <TopContainer>
                 <UppermostRow>
                     <BotCardManager>
-                        @{bot_object.manager}
+                        @{bot_object.manger ? truncateString(bot_object.manger): "Unkown Manager"}
                     </BotCardManager>
                     <ProfitLossRatio color={profitLossRatio >= 0 ? COLORS.PigmentGreen600 : COLORS.PersianRed500}>
                         {profitLossRatio >= 0 ? `+ ${profitLossRatio.toFixed(2)}% P/L` : `- ${Math.abs(profitLossRatio).toFixed(2)}% P/L`}
@@ -55,17 +77,17 @@ const BotCard = ({bot_object, myPortfolio, myBots}) => {
                             {bot_object.assets.map((asset, index) => (
                                 <Image
                                     key={index}
-                                    src={asset.src}
+                                    src={cryptoImages[asset].src}
                                     alt={`Asset ${index}`}
-                                    width={asset.width}
-                                    height={asset.height}
+                                    width={cryptoImages[asset].width}
+                                    height={cryptoImages[asset].height}
                                 />
                             ))}
                         </AssetImagesRow>
                     </AssetsRow>
                 )}
                 <BotCardDescription>
-                    {bot_object.description}
+                    {bot_object.description ? bot_object.description : "This bot has no provided description"}
                 </BotCardDescription>
                 <BottommostRow>
                     {!myPortfolio && !myBots && (
@@ -73,13 +95,13 @@ const BotCard = ({bot_object, myPortfolio, myBots}) => {
                             <BotCardFeeLabel>
                                 Management Fee: &nbsp;
                                 <BotCardFeeRate>
-                                    {bot_object.management_fee}
+                                    {bot_object.ManagementFee}%
                                 </BotCardFeeRate>
                             </BotCardFeeLabel>
                             <BotCardFeeLabel>
                                 Processing Fee: &nbsp;
                                 <BotCardFeeRate>
-                                    {bot_object.performance_fee}
+                                    {bot_object.PerformanceFee}%
                                 </BotCardFeeRate>
                             </BotCardFeeLabel>
                         </FeeColumn>
@@ -90,7 +112,7 @@ const BotCard = ({bot_object, myPortfolio, myBots}) => {
                         <InvestButton investMore/>
                         </>
                     )}
-                    {!myPortfolio && !myBots && (
+                    {!myPortfolio && !myBots && ( // MARKETPLACE
                         <InvestButton />
                     )}
                     {myBots && (

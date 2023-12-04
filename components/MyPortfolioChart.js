@@ -47,36 +47,18 @@ const MyPortfolioChart = () => {
     },
     scales: {
       y: {
-        // beginAtZero: true,
         beginAtZero: false,
         suggestedMax: 1500, // Set the maximum value
-      }
-      // x: [
-      //   {
-      //     type: 'category',
-      //     labels: chartData.labels,
-      //   },
-      // ],
-      // y: [
-      //   {
-      //     type: 'category',
-      //     labels: chartData.labels,
-      //     ticks: {
-      //       beginAtZero: true,
-      //       maxTicksLimit: 5, // Adjust this value based on your preference
-      //     },
-      //   },
-      // ],
-      
+      }      
     },
   };
 
 
   const percentage = 21.94;
-  const isNegativePercentage = percentage < 0;
+  const isNegativePercentage = Boolean(percentage < 0);
 
   const changeInAmount = 301.94;
-  const isNegativeChange = changeInAmount < 0;
+  const isNegativeChange = Boolean(changeInAmount < 0);
 
   return (
     <Section>

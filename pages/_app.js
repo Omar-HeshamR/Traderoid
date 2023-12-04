@@ -3,7 +3,9 @@ coinbaseWallet, walletConnect, localWallet,
 embeddedWallet} from "@thirdweb-dev/react";
 import { createGlobalStyle } from 'styled-components'
 import { COLORS } from "@/library/theme";
-
+import { StateContext } from "@/context/StateContext";
+import WithdrawModal from '@/components/WithdrawModal'
+import InvestModal from '@/components/InvestModal'
 
 export const GlobalStyle = createGlobalStyle`
   * 
@@ -53,17 +55,22 @@ export const GlobalStyle = createGlobalStyle`
 `
 
 export default function App({ Component, pageProps }) {
-  return (<>
+  return (
+  <>    
+    <StateContext>
       <ThirdwebProvider
-        activeChain="avalanche-fuji" clientId="cc42b11c37e27d6f284c1fd4203573d1"
-        supportedWallets={[ metamaskWallet({ recommended: true }), coinbaseWallet(),walletConnect(),
-          localWallet(), embeddedWallet({ auth: { options: ["email","google","apple","facebook",],},}),
-        ]}
+          activeChain="avalanche-fuji" clientId="cc42b11c37e27d6f284c1fd4203573d1"
+          supportedWallets={[ metamaskWallet({ recommended: true }), coinbaseWallet(),walletConnect(),
+            localWallet(), embeddedWallet({ auth: { options: ["email","google","apple","facebook",],},}),
+          ]}
       >
+        <WithdrawModal />
+        <InvestModal />
+        <Component {...pageProps} />
+      </ThirdwebProvider>
+    </StateContext>
 
-      <GlobalStyle />
-      <Component {...pageProps} />
-
-    </ThirdwebProvider>
-  </>)
+    <GlobalStyle />
+  </>
+  )
 }

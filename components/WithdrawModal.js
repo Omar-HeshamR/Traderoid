@@ -4,10 +4,12 @@ import { COLORS } from '@/library/theme';
 import { SIZING } from '@/library/sizing';
 import { ModalTopBannerHeader, ModalInputLabel, 
 ModalTotalAmountSpan, ModalTotalAmountNumber } from '@/library/typography';
-import { MdClose} from 'react-icons/md';
+import { MdClose } from 'react-icons/md';
+import { useStateContext } from '@/context/StateContext';
 
 const WithdrawModal = () => {
 
+  const {showWithdrawModal, setShowWithdrawModal} = useStateContext();
   const WithdrawRate = useRef();
 
   const WithdrawRateChange = () => {
@@ -27,6 +29,8 @@ const WithdrawModal = () => {
   };
 
   return (
+    <>
+    {showWithdrawModal &&
     <Background>
       <ModalBody>
         <TopBanner>
@@ -67,6 +71,7 @@ const WithdrawModal = () => {
         </BottomContent>
       </ModalBody>
     </Background>
+    }</>
   );
 };
 

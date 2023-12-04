@@ -3,9 +3,11 @@ import styled from 'styled-components'
 import { COLORS } from '@/library/theme'
 import { SIZING } from '@/library/sizing'
 import { MdOutlineAutoGraph } from "react-icons/md";
+import { useStateContext } from '@/context/StateContext';
 
 const InvestButton = ({withdraw, investMore, myBots}) => {
 
+  const { setShowInvestModal, setShowWithdrawModal } = useStateContext();
   let buttonText = "invest";
 
   if (withdraw) {
@@ -16,8 +18,16 @@ const InvestButton = ({withdraw, investMore, myBots}) => {
     buttonText = "view stats";
   }
 
+  function modalshow(){
+    if(buttonText = "invest"){
+      setShowInvestModal(true)
+    }else if(buttonText == "withdraw"){
+      setShowWithdrawModal(true)
+    }
+  }
+
   return (
-    <Button withdraw={withdraw} myBots={myBots}>
+    <Button withdraw={withdraw} myBots={myBots} onClick={() => modalshow()} >
         {!withdraw && !myBots && (
           <InvestIcon />
         )}

@@ -8,17 +8,59 @@ BotCreationWorkspaceDragAndDropYourScriptSpan, BotCreationWorkspaceOrSpan,
 BotCreationWorkspaceAffirmationSpan, BotCreationWorkspaceFileNameSpan } from '@/library/typography'
 import { MdClose } from "react-icons/md";
 import { MdCloudUpload } from "react-icons/md";
-
+import { useStorage } from "@thirdweb-dev/react";
+import { ethers } from 'ethers';
+import TradioABI from "@/contracts/abi/TraderoidABI.json"
+import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
 
 const BotCreationWorkspace = () => {
 
   const [botName, setBotName] = useState('');
+  const [description, setDescription ] = useState('')
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedAssets, setSelectedAssets] = useState([]);
   const [uploadedFileName, setUploadedFileName] = useState(null);
 
   const ManagementFee = useRef();
   const PerformanceFee = useRef()
+  const fileInputRef = useRef(null);
+  const [fileText, setFileText] = useState('');
+
+  const storage = useStorage();
+
+  const [isMinting, setIsMinting] = useState(false)
+  const [mintMessege, setMintMessege] = useState('')
+  async function handleNFTmint(){
+    setIsMinting(true)
+    try{
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    const metadeta = {
+        name: botName,
+        manager: address,
+        tags: selectedTags,
+        description: description,
+        assets: selectedAssets,
+        ManagementFee: parseInt(ManagementFee.current.value),
+        PerformanceFee: parseInt(PerformanceFee.current.value),
+        script: fileText
+    };
+    console.log(metadeta)
+    const contract = new ethers.Contract(Traderiod_NFT_CONTRACT_ADDRESS, TradioABI, signer);
+    const url = await storage.upload(metadeta);
+    const tx = await contract.safeMint(url, metadeta.ManagementFee);
+    await tx.wait();
+    console.log("NFT Minted!");
+    setMintMessege("NFT Minted!");
+    setIsMinting(false)
+    }catch(err){
+        console.log(err)
+        setMintMessege(err.toString())
+        setIsMinting(false)
+    }
+  }
 
   const handleTagSelect = (tag) => {
     if (!selectedTags.includes(tag)) {
@@ -56,8 +98,6 @@ const BotCreationWorkspace = () => {
     }
   };
 
-  const fileInputRef = useRef(null);
-
   const handleFileInputContainerClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -68,6 +108,9 @@ const BotCreationWorkspace = () => {
     console.log('File input changed:', e.target.files);
     const file = e.target.files[0];
     if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => setFileText(e.target.result);
+      reader.readAsText(file);
       console.log('Selected file:', file);
       setUploadedFileName(file.name);
     }
@@ -75,7 +118,6 @@ const BotCreationWorkspace = () => {
 
   return (
     <Section>
-
         <LabelAndInputColumn>
             <BotCreationWorkspaceInputLabel htmlFor="botName">
                 Name of your bot
@@ -130,7 +172,7 @@ const BotCreationWorkspace = () => {
                     </SelectedItemRow>
                     <Select onChange={(e) => handleAssetSelect(e.target.value)}>
                     <DeselectedOption></DeselectedOption>
-                    <Option value="Bitcoin">Bitcoin</Option>
+                    <Option value="BTC">Bitcoin</Option>
                     <Option value="ETH">ETH</Option>
                     <Option value="LINK">LINK</Option>
                     <Option value="MANIA">MANIA</Option>
@@ -179,7 +221,7 @@ const BotCreationWorkspace = () => {
             <BotCreationWorkspaceInputLabel>
                 Description
             </BotCreationWorkspaceInputLabel>
-            <Textarea rows="4"/>
+            <Textarea rows="4" value={description} onChange={(e) => setDescription(e.target.value)}/>
 
         </LabelAndInputColumn>
 
@@ -230,10 +272,10 @@ const BotCreationWorkspace = () => {
 
         </LabelAndInputColumn>
 
-        <CreateBotButton>
+        <CreateBotButton onClick={handleNFTmint} disabled={isMinting} >
             Create
-        </CreateBotButton>
-
+        </CreateBotButton>  
+        {mintMessege && <>{mintMessege}</>}
     </Section>
   )
 }

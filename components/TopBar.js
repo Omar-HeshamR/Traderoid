@@ -12,7 +12,7 @@ import { ConnectWallet, ThirdwebProvider, useWallet, useAddress } from '@thirdwe
 const TopBar = ({header, type}) => {
 
   const isConnected = Boolean(useAddress() != undefined);
-  console.log(isConnected)
+//   console.log(isConnected)
   return (
     <Section>
 

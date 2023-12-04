@@ -1,7 +1,14 @@
 import Head from 'next/head'
-import { ConnectWallet } from "@thirdweb-dev/react";
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 export default function Home() {
+
+  const router = useRouter();
+  useEffect(() => {
+    router.push(`/marketplace`)
+  }, [])
+
   return (
     <>
       <Head>
@@ -11,9 +18,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-
-        {/* <ConnectWallet theme={"dark"} modalSize={"compact"}/> */}
-
       </main>
     </>
   )

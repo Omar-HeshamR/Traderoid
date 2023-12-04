@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import LeftBar from '@/components/LeftBar'
 import TopBar from '@/components/TopBar'
 import {Section, ScrollableContainer, CardGrid} from '@/library/structure'
@@ -9,12 +9,12 @@ import LINK from '@/public/images/assets/LINK.webp'
 import MANA from '@/public/images/assets/MANA.webp'
 import MATIC from '@/public/images/assets/MATIC.webp'
 import UNI from '@/public/images/assets/UNI.webp'
-import InvestModal from '@/components/InvestModal'
-import WithdrawModal from '@/components/WithdrawModal'
-
+import TradioABI from "@/contracts/abi/TraderoidABI.json"
+import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
+import { ethers } from 'ethers';
+import { useStorage } from '@thirdweb-dev/react';
 
 const Marketplace = () => {
-
 
   const botObjects = [
     {
@@ -172,6 +172,31 @@ const Marketplace = () => {
     },
   ];
 
+  const [nftData, setNftData] = useState([]);
+  const storage = useStorage();
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(Traderiod_NFT_CONTRACT_ADDRESS, TradioABI, signer);
+        const tokenURIs = await contract.getAllTokenURIs(); // Replace with your contract's method
+        const dataPromises = tokenURIs.map(async (uri, index) => {
+          const data = await storage.download(uri);
+          const metadataResponse = await fetch(data.url);
+          const botWalletAddress = await contract.BotsWalletAddresses(index);
+          const metadata = await metadataResponse.json();
+          metadata.walletAddress = botWalletAddress;
+          return metadata;
+        });
+        const results = await Promise.all(dataPromises);
+        setNftData(results);
+        console.log(results)
+    }
+    asyncFunc()
+  }, [])
+
   return (
     <Section>
 
@@ -182,7 +207,7 @@ const Marketplace = () => {
         <TopBar header="Explore trending bots" type="filter"/>
 
         <CardGrid>
-          {botObjects.map((botObject, index) => (
+          {nftData.map((botObject, index) => (
               <BotCard bot_object={botObject} key={index}/>
           ))}
         </CardGrid>
@@ -191,7 +216,7 @@ const Marketplace = () => {
 
       {/* <InvestModal/> */}
 
-      <WithdrawModal />
+      {/* <WithdrawModal /> */}
 
     </Section>
   )

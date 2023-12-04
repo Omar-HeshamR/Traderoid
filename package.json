@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "npx --yes thirdweb@latest generate"
+    "lint": "next lint"
   },
   "dependencies": {
     "@fontsource/syne": "^5.0.17",

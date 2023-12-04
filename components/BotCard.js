@@ -22,6 +22,7 @@ const BotCard = ({bot_object, myPortfolio, myBots}) => {
         "ETH": ETH,
         "LINK": LINK,
         "MANA": MANA,
+        "MANIA": MANA,
         "MATIC": MATIC,
         "UNI": UNI,
     };

@@ -180,13 +180,13 @@ export const MyPortfolioChartUnselectedToggleSpan = styled.span`
 font-size: ${SIZING.px12};
 letter-spacing: -0.015rem;
 color: ${COLORS.Black400};
-font-family: "Uncut Sans Medium;
+font-family: "Uncut Sans Medium";
 `
 export const MyPortfolioChartSelectedToggleSpan = styled.span`
 font-size: ${SIZING.px12};
 letter-spacing: -0.015rem;
 color: ${COLORS.Black100};
-font-family: "Uncut Sans Medium;
+font-family: "Uncut Sans Medium";
 `
 export const ModalTopBannerHeader = styled.span`
 width: 90%;

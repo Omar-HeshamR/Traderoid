@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import LeftBar from '@/components/LeftBar'
 import TopBar from '@/components/TopBar'
@@ -7,79 +7,51 @@ import { SIZING } from '@/library/sizing';
 import {Section, ScrollableContainer, CardGrid} from '@/library/structure'
 import MyPortfolioChart from '@/components/MyPortfolioChart'
 import BotCard from '@/components/BotCard'
+import { useAddress, useStorage, useSigner } from '@thirdweb-dev/react';
+import TraderoidAccountABI from "@/contracts/abi/TraderoidAccountABI.json"
+import TradioABI from "@/contracts/abi/TraderoidABI.json"
+import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
+import { ethers } from 'ethers';
 
 const MyPortfolio = () => {
 
-  const botObjects = [
-    {
-      manager: 'farukkandemir999',
-      name: 'MusaBot Pro',
-      tags: ['Yazdan', 'Abdel', 'Majid', 'Stephen'],
-      assets: ["BTC", "MANA", "MATIC", "ETH"],
-      description:
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-      sed do eiusmod tempor incididunt ut labore et dolore magna 
-      aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-      ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit 
-      esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
-      occaecat cupidatat non proident, sunt in culpa qui officia 
-      deserunt mollit anim id est laborum.`,
-      ManagementFee: '11.99%',
-      PerformanceFee: '11.99%',
-    },
-    {
-      manager: 'farukkandemir11',
-      name: 'Musaka Pro',
-      tags: ['Musa', 'Elsaid', 'Nasser'],
-      assets: ["LINK", "MANA", "UNI", "ETH"],
-      description:
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-      sed do eiusmod tempor incididunt ut labore et dolore magna 
-      aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-      ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit 
-      esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
-      occaecat cupidatat non proident, sunt in culpa qui officia 
-      deserunt mollit anim id est laborum.`,
-      ManagementFee: '12.00%',
-      PerformanceFee: '11.99%',
-    },
-    {
-      manager: 'farukkandemir585',
-      name: 'Mahmuti',
-      tags: ['Tweaker', 'Digital', 'Publication', 'Research'],
-      assets: ["BTC", "MANA", "UNI", "ETH"],
-      description:
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-      sed do eiusmod tempor incididunt ut labore et dolore magna 
-      aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-      ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit 
-      esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
-      occaecat cupidatat non proident, sunt in culpa qui officia 
-      deserunt mollit anim id est laborum.`,
-      ManagementFee: '1.97%',
-      PerformanceFee: '11.99%',
-    },
-    {
-      manager: 'farukkandemir999',
-      name: 'Speedy Need',
-      tags: ['Yazdan', 'Abdel', 'Majid', 'Stephen'],
-      assets: ["BTC", 'MANA', "MATIC", "ETH"],
-      description:
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-      sed do eiusmod tempor incididunt ut labore et dolore magna 
-      aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-      ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit 
-      esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
-      occaecat cupidatat non proident, sunt in culpa qui officia 
-      deserunt mollit anim id est laborum.`,
-      ManagementFee: '14.91%',
-      PerformanceFee: '11.99%',
-    },
-  ];
+  const [ loadingProfile, setLoadingProfile ] = useState(true);
+  const [ total_invesment_amount, set_total_invesment_amount] = useState();
+  const [nftData, setNftData] = useState([]);
+  const signer = useSigner();
+  const storage = useStorage();
+  const userAddress = useAddress();
+
+  useEffect(() => { 
+    const asyncFunc = async () => {
+        if(!signer){return}
+        if(!userAddress){return}
+        let total_invesment_amount_inner = 0;
+        const invested_NFTs = [];
+        const contract = new ethers.Contract(Traderiod_NFT_CONTRACT_ADDRESS, TradioABI, signer);
+        const tokenURIs = await contract.getAllTokenURIs(); // Replace with your contract's method
+        const dataPromises = tokenURIs.map(async (uri, index) => {
+          const data = await storage.download(uri);
+          const metadataResponse = await fetch(data.url);
+          const botWalletAddress = await contract.BotsWalletAddresses(index);
+          const metadata = await metadataResponse.json();
+          metadata.walletAddress = botWalletAddress;
+          const TraderoidAccountContract = new ethers.Contract(botWalletAddress, TraderoidAccountABI, signer);
+          const BOTinvesmentAmount = await TraderoidAccountContract.investments(userAddress) 
+          total_invesment_amount_inner += Number(BOTinvesmentAmount);
+          console.log(Number(BOTinvesmentAmount))
+          if(BOTinvesmentAmount > 0){
+            invested_NFTs.push(metadata)
+          }
+          return metadata;
+        });
+        const results = await Promise.all(dataPromises);
+        setNftData(invested_NFTs);
+        set_total_invesment_amount(total_invesment_amount_inner);
+        setLoadingProfile(false);
+    }
+    asyncFunc()
+  }, [signer])
 
   return (
     <Section>
@@ -90,17 +62,23 @@ const MyPortfolio = () => {
 
         <TopBar header="Your portfolio"/>
 
-        <MyPortfolioChart />
+        {loadingProfile ?
+          <div>Loading Profile..</div>
+        : <>
+        
+        <MyPortfolioChart total_invesment_amount={total_invesment_amount}/>
 
         <BotsYouHaveInvestedInHeader>
           Bots you&apos;ve invested in
         </BotsYouHaveInvestedInHeader>
 
         <CardGrid>
-          {botObjects.map((botObject, index) => (
+          {nftData.map((botObject, index) => (
               <BotCard bot_object={botObject} key={index} myPortfolio myBots={false}/>
           ))}
         </CardGrid>
+        </>
+        }
 
       </ScrollableContainer>
 

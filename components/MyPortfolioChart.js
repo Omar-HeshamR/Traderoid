@@ -10,7 +10,7 @@ MyPortfolioChartUnselectedToggleSpan } from '@/library/typography';
 import { MdArrowDropDownCircle } from "react-icons/md";
 
 
-const MyPortfolioChart = () => {
+const MyPortfolioChart = ({total_invesment_amount}) => {
   const chartData = {
     labels: ['Nov 26', 'Nov 27', 'Nov 28', 'Nov 29', 'Nov 30', 'Dec 1'],
     datasets: [
@@ -54,10 +54,10 @@ const MyPortfolioChart = () => {
   };
 
 
-  const percentage = 21.94;
-  const isNegativePercentage = Boolean(percentage < 0);
+  const randomPercentage = Math.round((Math.random() * 200) - 50)/100;
+  const isNegativePercentage = Boolean(randomPercentage < 0);
 
-  const changeInAmount = 301.94;
+  const changeInAmount = total_invesment_amount * randomPercentage;
   const isNegativeChange = Boolean(changeInAmount < 0);
 
   return (
@@ -74,11 +74,11 @@ const MyPortfolioChart = () => {
             <MyPortfolioChartDollarSignSpan>
               $&nbsp;
             </MyPortfolioChartDollarSignSpan>
-            5,103.31
+            {total_invesment_amount}
           </MyPortfolioChartCurrentBalanceNumber>
           <ChangeInPercentage isNegative={isNegativePercentage}>
             <ChangeInPercentageIcon isNegative={isNegativePercentage}/>
-            {percentage} %
+            {randomPercentage} %
           </ChangeInPercentage>
         </CurrentBalanceRow>
 

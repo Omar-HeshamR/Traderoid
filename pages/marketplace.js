@@ -3,17 +3,10 @@ import LeftBar from '@/components/LeftBar'
 import TopBar from '@/components/TopBar'
 import {Section, ScrollableContainer, CardGrid} from '@/library/structure'
 import BotCard from '@/components/BotCard'
-import Bitcoin from '@/public/images/assets/Bitcoin.webp'
-import ETH from '@/public/images/assets/ETH.webp'
-import LINK from '@/public/images/assets/LINK.webp'
-import MANA from '@/public/images/assets/MANA.webp'
-import MATIC from '@/public/images/assets/MATIC.webp'
-import UNI from '@/public/images/assets/UNI.webp'
 import TradioABI from "@/contracts/abi/TraderoidABI.json"
 import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
 import { ethers } from 'ethers';
-import { useStorage } from '@thirdweb-dev/react';
-import { useSigner } from "@thirdweb-dev/react";
+import { useStorage, useSigner } from '@thirdweb-dev/react';
 
 const Marketplace = () => {
   

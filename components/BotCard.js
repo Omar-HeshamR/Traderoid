@@ -55,7 +55,7 @@ const BotCard = ({ bot_object, myPortfolio }) => {
             <TopContainer>
                 <UppermostRow>
                     <BotCardManager>
-                        @{bot_object.manger ? truncateString(bot_object.manger): "Unkown Manager"}
+                        @{bot_object.manager ? truncateString(bot_object.manager): "Unkown Manager"}
                     </BotCardManager>
                     <ProfitLossRatio color={profitLossRatio >= 0 ? COLORS.PigmentGreen600 : COLORS.PersianRed500}>
                         {profitLossRatio >= 0 ? `+ ${profitLossRatio.toFixed(2)}% P/L` : `- ${Math.abs(profitLossRatio).toFixed(2)}% P/L`}

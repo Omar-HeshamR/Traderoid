@@ -21,3 +21,41 @@ export const Traderiod_NFT_CONTRACT_ADDRESS = "0xF34964D5399109fbDF19524F08B0939
  * 
  * */ 
 
+/*
+const funcType='1';const amountIn='20000000000000000';const amountOutMin = '0';const address1 = '0xd00ae08403B9bbb9124bB305C09058E32C39A48c';const address2 = '0x97dB2DA85708C4cDB73D9601FDE3C1d4f3a0CdaE';const deadline = '100000000000000000';const string = `${funcType}#${amountIn}#${amountOutMin}#${address1}#${address2}#${deadline}`;return Functions.encodeString(string.toString());
+
+const chainlinkApiRequest = {
+  url: 'https://api.openai.com/v1/chat/completions',
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${secrets[0]}`,
+    'Content-Type': 'application/json',
+  },
+  data: JSON.stringify({
+    'model': 'gpt-3.5-turbo-16k',
+    'messages': [
+      {
+        'role': 'system',
+        'content': 'You are a cryptocurrency trading bot.'
+      },
+      {
+        'role': 'user',
+        'content': 'Who won the world series in 2020?'
+      },
+    ]
+  }),
+};
+
+// Execute the API request (Promise)
+const apiResponse = await Functions.makeHttpRequest(chainlinkApiRequest);
+if (apiResponse.status !== 200) {
+  console.error('API request failed:', apiResponse.statusText);
+  throw Error('Request failed');
+}
+
+const responseText = apiResponse.data.choices[0].message.content;
+
+console.log('ChatGPT response:', responseText);
+// Return the response from ChatGPT
+return Functions.encodeString(responseText);
+*/

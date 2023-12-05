@@ -13,16 +13,13 @@ const Typewriter = ({ text, speed }) => {
 
     const intervalId = setInterval(() => {
       setDisplayedText((prevText) => prevText + text[currentIndex]);
-
       currentIndex += 1;
-
-      if (currentIndex === text.length) {
+      if (currentIndex === text.length - 1) {
         clearInterval(intervalId);
       }
     }, speed);
-
     return () => clearInterval(intervalId);
-  }, [text, speed]);
+  }, []);
 
   return <>{displayedText}</>;
 };
@@ -35,7 +32,7 @@ const ChatBubbles = ({ messages }) => {
           <ChatBubble isUser={true} message={pair.user} />
           <IconAndTextRow>
             <RobotIcon />
-            <ChatBubble isUser={false} message={pair.ai} />
+            <ChatBubble isUser={false} message={pair.assistant} />
           </IconAndTextRow>
         </div>
       ))}
@@ -50,7 +47,7 @@ const ChatBubble = ({ isUser, message }) => {
         {isUser ? (
           <ChatMessageText>{message}</ChatMessageText>
         ) : (
-          <Typewriter text={message} speed={1} />
+          <Typewriter text={message} speed={20} />
         )}
       </BubbleContent>
     </BubbleWrapper>

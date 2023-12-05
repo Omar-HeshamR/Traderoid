@@ -9,29 +9,21 @@ import LogoUncolored from '@/public/images/LogoUncolored.webp'
 import { ChatTopBarSpan, ChatBottomColumnSmall, ChatInitialScreenHeader,
 ChatGridNormalSpan, ChatGridBoldSpan } from '@/library/typography';
 import { MdArrowUpward } from "react-icons/md";
-
+import OpenAI from "openai";
+require('dotenv').config();
 
 const Chat = () => {
   
+  const [ thread, setThread ] = useState();
+
   const [isTyping, setIsTyping] = useState(false);
   const [showInitialScreen, setShowInitialScreen] = useState(true);
   const [showChatContainer, setShowChatContainer] = useState(false);
-  const [userMessages, setUserMessages] = useState([]); 
-  const [aiMessages, setAiMessages] = useState([]);     
+
+  const [showLoader, setShowLoader] = useState(false);
   const [messages, setMessages] = useState([]);
   const userMessageRef = useRef();
   const chatContainerRef = useRef(null);
-
-  const testResponseString = `
-  Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-  when an unknown printer took a galley of type and scrambled it to make a type 
-  specimen book. It has survived not only five centuries, but also the leap into 
-  electronic typesetting, remaining essentially unchanged. It was popularised in 
-  the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
-  and more recently with desktop publishing software like Aldus PageMaker 
-  including versions of Lorem Ipsum.
-  `
 
   useEffect(() => {
     const chatContainer = chatContainerRef.current;
@@ -49,20 +41,35 @@ const Chat = () => {
     setIsTyping(inputValue.length > 0);
   }
 
-  function handleSend(vart) {
+  async function handleSend() {
     
-    const trimmedInputValue = userMessageRef.current.value.trim();
+    const prompt = userMessageRef.current.value.trim();
 
-    if (trimmedInputValue !== '') {
-        setUserMessages([...userMessages, trimmedInputValue]);
-        const aiResponse = testResponseString;
-        setAiMessages([...aiMessages, aiResponse]);
-        userMessageRef.current.value = ""
-        setShowInitialScreen(false);
-        setShowChatContainer(true);
-        setMessages([...messages, { user: trimmedInputValue, ai: aiResponse }]);
-    }
-    }
+    if (prompt !== '') {
+        try {
+            setShowInitialScreen(false);
+            setShowLoader(true)
+            userMessageRef.current.value = "";
+            const response = await fetch('/api/askDroidvisor', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ prompt }),
+            });
+            if (!response.ok) {
+              throw new Error(`Error: ${response.status}`);
+            }        
+            const data = await response.json();
+            setShowLoader(false)
+            setMessages([...messages, { user: prompt, assistant: data.content }]);
+            setShowChatContainer(true);
+          } catch (err) {
+            console.log('Error:', err);
+            return;
+          }
+        }
+  }
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -126,11 +133,17 @@ const Chat = () => {
             </InitialScreen>
         )}
 
+        {showLoader ? (
+            <div>Thinking...</div>
+        ):<>
         {showChatContainer && (
             <ChatContainer  ref={chatContainerRef}>
                 <ChatBubbles messages={messages} />
             </ChatContainer>
         )}
+        </>}
+
+
 
         <BottomColumn>
             <MessageWrapper>

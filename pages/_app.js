@@ -5,7 +5,8 @@ import { createGlobalStyle } from 'styled-components'
 import { COLORS } from "@/library/theme";
 import { StateContext } from "@/context/StateContext";
 import WithdrawModal from '@/components/WithdrawModal'
-import InvestModal from '@/components/InvestModal'
+import InvestModal from '@/components/InvestModal';
+import Head from "next/head";
 
 export const GlobalStyle = createGlobalStyle`
   * 
@@ -17,11 +18,6 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    ::-webkit-scrollbar {
-      display: none;
-    }
-    -ms-overflow-style: none;
-    scrollbar-width: none; 
     a {
       color: inherit; 
       text-decoration: none; 
@@ -57,6 +53,13 @@ export const GlobalStyle = createGlobalStyle`
 export default function App({ Component, pageProps }) {
   return (
   <>    
+    <Head>
+      <title>Traderoid</title>
+      <link rel="icon" href="/favicon.ico" />
+      <meta name="description" content="Transparent, decentralized trading bot NFT marketplace!" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </Head>
+
     <StateContext>
       <ThirdwebProvider
           activeChain="avalanche-fuji" clientId="cc42b11c37e27d6f284c1fd4203573d1"

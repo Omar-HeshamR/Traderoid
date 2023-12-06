@@ -160,7 +160,6 @@ letter-spacing: 0.01rem;
 font-family: "Uncut Sans Regular";
 `
 export const MyPortfolioChartCurrentBalanceSpan = styled.span`
-margin-bottom: ${SIZING.px12};
 font-size: ${SIZING.px16};
 letter-spacing: -0.04rem;
 color: ${COLORS.Black700};

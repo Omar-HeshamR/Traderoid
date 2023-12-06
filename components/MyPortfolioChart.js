@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { COLORS } from '@/library/theme';
 import { SIZING } from '@/library/sizing';
-import { Line } from 'react-chartjs-2';
+import { Line, Doughnut } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import { MyPortfolioChartCurrentBalanceSpan, MyPortfolioChartCurrentBalanceNumber,
 MyPortfolioChartDollarSignSpan,MyPortfolioChartSelectedToggleSpan, 
@@ -11,6 +11,13 @@ import { MdArrowDropDownCircle } from "react-icons/md";
 
 
 const MyPortfolioChart = ({total_invesment_amount}) => {
+
+  const [selectedItem, setSelectedItem] = useState('Chart'); 
+
+  const handleToggle = (item) => {
+    setSelectedItem(selectedItem === 'Chart' ? 'Allocation' : 'Chart');
+  };
+
   const chartData = {
     labels: ['Nov 26', 'Nov 27', 'Nov 28', 'Nov 29', 'Nov 30', 'Dec 1'],
     datasets: [
@@ -53,6 +60,65 @@ const MyPortfolioChart = ({total_invesment_amount}) => {
     },
   };
 
+  const allocationData = {
+    labels: ['MusaBot', 'Shrimpy', 'TrilloBot'],
+    datasets: [
+      {
+        borderWidth: 0,
+        data: [30, 40, 30],
+        backgroundColor: [COLORS.PigmentGreen900, COLORS.PigmentGreen800, COLORS.PigmentGreen700Default],
+        fill: false,
+        pointBackgroundColor: '#e6194b'
+      },
+    ],
+  };
+
+
+  const allocationOptions = {
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right',
+        labels: {
+          generateLabels: function (chart) {
+            const data = chart.data;
+            
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => {
+                const value = data.datasets[0].data[i];
+                return {
+                  text: `${label}: ${value}%`,
+                  fillStyle: data.datasets[0].backgroundColor[i],
+                  strokeStyle: 'transparent', 
+                  fontColor: COLORS.Black100,   
+                                 
+                };
+              });
+            }
+            return [];
+          },
+
+          usePointStyle: true, 
+          font: {
+            size: 20, 
+          },
+          padding: 30, // You can adjust the value as needed
+
+      },
+      },
+
+    },
+    elements: {
+      arc: {
+        borderWidth: 0,
+      },
+    },
+    cutout: 70,
+    
+    
+  };
+
+
 
   const randomPercentage = Math.round((Math.random() * 200) - 50)/100;
   const isNegativePercentage = Boolean(randomPercentage < 0);
@@ -83,14 +149,25 @@ const MyPortfolioChart = ({total_invesment_amount}) => {
         </CurrentBalanceRow>
 
         <ToggleRow>
-          <SelectedItemPadder>
-            <MyPortfolioChartSelectedToggleSpan>
+          {selectedItem === 'Chart' ? (
+            <SelectedItem>
               Chart
-            </MyPortfolioChartSelectedToggleSpan>
-          </SelectedItemPadder>
-          <MyPortfolioChartUnselectedToggleSpan>
-            Allocation
-          </MyPortfolioChartUnselectedToggleSpan>
+            </SelectedItem>
+          ) : (
+            <UnselectedItem onClick={() => handleToggle('Chart')}>
+              Chart
+            </UnselectedItem>
+          )}
+          
+          {selectedItem === 'Allocation' ? (
+            <SelectedItem>
+              Allocation
+            </SelectedItem>
+          ) : (
+            <UnselectedItem onClick={() => handleToggle('Allocation')}>
+              Allocation
+            </UnselectedItem>
+          )}
         </ToggleRow>
       </FullSpanRow>
 
@@ -102,9 +179,17 @@ const MyPortfolioChart = ({total_invesment_amount}) => {
         </TwentyFourHours>
       </ChangeInAmountRow>
 
-      <ChartWrapper>
-        <Line data={chartData} options={chartOptions}/>
-      </ChartWrapper>
+      {selectedItem === 'Chart' && (
+        <ChartWrapper>
+          <Line data={chartData} options={chartOptions} />
+        </ChartWrapper>
+      )}
+
+      {selectedItem === 'Allocation' && (
+        <ChartWrapper>
+          <Doughnut data={allocationData} options={allocationOptions}/>
+        </ChartWrapper>
+      )}
     
       
     </Section>
@@ -112,7 +197,7 @@ const MyPortfolioChart = ({total_invesment_amount}) => {
 };
 
 const Section = styled.section`
-display: flex;
+display: flex
 flex-direction: column;
 padding: ${SIZING.px24} ${SIZING.px24};
 background-color: ${COLORS.Black875};
@@ -165,25 +250,37 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 width: 100%;
+margin-top: ${SIZING.px4};
 `
 const ToggleRow = styled.div`
 display: flex;
 align-items: center;
-padding-left: ${SIZING.px4};
-padding-top: ${SIZING.px4};
-padding-bottom: ${SIZING.px4};
-padding-right: ${SIZING.px20};
-gap: ${SIZING.px16};
+padding: ${SIZING.px4};
+gap: ${SIZING.px4};
 background-color: ${COLORS.Black850};
 border: 1px solid ${COLORS.Black800};
 border-radius: ${SIZING.px96};
 `
-const SelectedItemPadder = styled.div`
+const SelectedItem = styled.div`
 padding: ${SIZING.px8} ${SIZING.px16};
 background-color: ${COLORS.Black800};
 border-radius: ${SIZING.px96};
 `
+const UnselectedItem = styled.span`
+padding: ${SIZING.px8} ${SIZING.px16};
+border-radius: ${SIZING.px96};
+transition: 0.2s ease-in-out;
+cursor: pointer;
+
+&:hover{
+background-color: ${COLORS.Black800};
+}
+`
+
 const ChartWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
 width: 100%; 
 height: ${SIZING.px416};
 `

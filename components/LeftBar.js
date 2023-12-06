@@ -80,8 +80,11 @@ const LeftBar = ({selected}) => {
                 </Nav>
 
                 <LeftBarTrademarkText>
-                    Powered by Avalanche and Chainlink
-                </LeftBarTrademarkText>             
+                    Powered by Avalanche and Chainlink <br />
+                    <AccessDocs onClick={() => window.open('/documentation', '_blank')}>
+                        Click here to access our Documentation. ⇗
+                    </AccessDocs>
+                </LeftBarTrademarkText>               
             </MainColumn>
         </Section>
     )
@@ -233,6 +236,13 @@ fill: ${COLORS.Black500};
 }
 `
 
+const AccessDocs = styled.div`
+    margin-top: ${SIZING.px10};
+    font-size: ${SIZING.px10};
+    color: ${COLORS.Black500};
+    text-decoration: underline;
+    cursor: pointer;
+`
 
 
 export default LeftBar

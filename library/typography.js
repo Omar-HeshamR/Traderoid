@@ -15,7 +15,7 @@ color: ${COLORS.Black200};
 `
 export const LeftBarTrademarkText = styled.small`
 font-size: ${SIZING.px12};
-color: ${COLORS.Black800};
+color: ${COLORS.Black600};
 `
 export const BotCardManager = styled.span`
 font-size: ${SIZING.px12};

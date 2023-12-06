@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { COLORS } from '@/library/theme'
 import { SIZING } from '@/library/sizing'
 import Image from 'next/image';
@@ -7,8 +7,10 @@ import ChatBubbles from './ChatBubbles';
 import { BsStars } from "react-icons/bs";
 import LogoUncolored from '@/public/images/LogoUncolored.webp'
 import { ChatTopBarSpan, ChatBottomColumnSmall, ChatInitialScreenHeader,
-ChatGridNormalSpan, ChatGridBoldSpan } from '@/library/typography';
+ChatGridNormalSpan, ChatGridBoldSpan} from '@/library/typography';
+import { AssistantChatBubble } from './ChatBubbles';
 import { MdArrowUpward } from "react-icons/md";
+import ChatLoader from './ChatLoader.js'
 import OpenAI from "openai";
 require('dotenv').config();
 
@@ -134,10 +136,18 @@ const Chat = () => {
         )}
 
         {showLoader ? (
-            <div>Thinking...</div>
+            <LoadingContaner>
+
+                <LoadingSpan>
+                    Analyzing market data...
+                </LoadingSpan>
+
+                <ChatLoader />
+                
+            </LoadingContaner>
         ):<>
         {showChatContainer && (
-            <ChatContainer  ref={chatContainerRef}>
+            <ChatContainer ref={chatContainerRef}>
                 <ChatBubbles messages={messages} />
             </ChatContainer>
         )}
@@ -284,6 +294,32 @@ margin-bottom: ${SIZING.px24};
 max-height: ${SIZING.px416};
 overflow-y: scroll;
 overflow-x: hidden;
+`
+const LoadingContaner = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+margin: auto;
+gap: ${SIZING.px32};
+`
+const loadingSpanAnimation = keyframes`
+0% {
+letter-spacing: -0.1rem;
+}
+50% {
+letter-spacing: -0.08rem;
+}
+100% {
+letter-spacing: -0.1rem;
+}
+`
+const LoadingSpan = styled.div`
+font-size: ${SIZING.px24};
+letter-spacing: -0.1rem;
+color: ${COLORS.Black200};
+font-family: "Uncut Sans Medium";
+animation: ${loadingSpanAnimation} 0.4s infinite;
 `
 
 export default Chat

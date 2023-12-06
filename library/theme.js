@@ -24,6 +24,9 @@ PersianRed600Default: 'rgba(204, 41, 54, 1)',
 
 PigmentGreen500: 'rgba(51, 219, 118, 1)',
 PigmentGreen600: 'rgba(22, 197, 92, 1)',
+PigmentGreen700Default: '#08A045',
+PigmentGreen800: '#00752F',
+PigmentGreen900: '#00421B',
 
 StandardWhiteDefault: 'rgba(246, 248, 255, 1)',
 

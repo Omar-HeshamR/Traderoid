@@ -12,6 +12,7 @@ import { useStorage, useAddress, useSigner } from '@thirdweb-dev/react';
 import { ethers } from 'ethers';
 import TradioABI from "@/contracts/abi/TraderoidABI.json"
 import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
+const crypto = require('crypto');
 
 const BotCreationWorkspace = () => {
 
@@ -35,7 +36,7 @@ const BotCreationWorkspace = () => {
   async function handleNFTmint(){
     setIsMinting(true)
     try{
-    const metadeta = {
+    const metadata = {
         name: botName,
         manager: userAddress,
         tags: selectedTags,
@@ -45,10 +46,13 @@ const BotCreationWorkspace = () => {
         PerformanceFee: parseInt(PerformanceFee.current.value),
         script: fileText
     };
-    console.log(metadeta)
+    const data = JSON.stringify(metadata) + new Date().toISOString();
+    const hash = crypto.createHash('sha256').update(data).digest('hex');
+    metadata.id = hash;
+    console.log(metadata)
     const contract = new ethers.Contract(Traderiod_NFT_CONTRACT_ADDRESS, TradioABI, signer);
-    const url = await storage.upload(metadeta);
-    const tx = await contract.safeMint(url, metadeta.ManagementFee);
+    const url = await storage.upload(metadata);
+    const tx = await contract.safeMint(url, metadata.ManagementFee, metadata.script);
     await tx.wait();
     console.log("NFT Minted!");
     setMintMessege("NFT Minted!");
@@ -173,7 +177,7 @@ const BotCreationWorkspace = () => {
                     <Option value="BTC">Bitcoin</Option>
                     <Option value="ETH">ETH</Option>
                     <Option value="LINK">LINK</Option>
-                    <Option value="MANIA">MANIA</Option>
+                    <Option value="MANA">MANA</Option>
                     <Option value="MATIC">MATIC</Option>
                     <Option value="UNI">UNI</Option>
                     </Select>
@@ -226,8 +230,8 @@ const BotCreationWorkspace = () => {
         <LabelAndInputColumn style={{marginTop: SIZING.px24}}>
             <BotCreationWorkspaceScriptConfigurationLabel>
                 For more information on how your script should be configured, please refer to this&nbsp;
-                <BotCreationWorkspaceUnderlinedSpan>
-                    link
+                <BotCreationWorkspaceUnderlinedSpan onClick={() => window.open('/documentation', '_blank')}>
+                    Documentation Link
                 </BotCreationWorkspaceUnderlinedSpan>
             </BotCreationWorkspaceScriptConfigurationLabel>
 

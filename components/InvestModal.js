@@ -9,15 +9,53 @@ import { MdClose, MdOutlineAutoGraph } from 'react-icons/md';
 import Image from 'next/image';
 import AvalancheLogo from '@/public/images/AvalancheLogo.webp'
 import { useStateContext } from '@/context/StateContext';
-import { useBalance } from "@thirdweb-dev/react";
+import { useBalance, useSigner, useStorage } from "@thirdweb-dev/react";
 import { NATIVE_TOKEN_ADDRESS } from "@thirdweb-dev/sdk";
+import TraderoidAccountABI from "@/contracts/abi/TraderoidAccountABI.json"
+import TradioABI from "@/contracts/abi/TraderoidABI.json"
+import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
+import { ethers } from 'ethers';
 
 const InvestModal = () => {
   
+  const { pickedBot } = useStateContext();
   const { data: balance, isLoading } = useBalance(NATIVE_TOKEN_ADDRESS);
   const {showInvestModal, setShowInvestModal} = useStateContext();
   const [ invesmentAmount, setInvesmentAmount ] = useState(0.00)
   const [ amountInUSD, setAmountInUSD ] = useState(0.00);
+  const signer = useSigner();
+  const storage = useStorage();
+
+  useEffect(() => {
+    if(!pickedBot){setShowInvestModal(false)}
+  }, [pickedBot])
+
+  async function handleInvest(){
+    if(!signer || !pickedBot){return}
+    if(pickedBot.id){
+        const contract = new ethers.Contract(Traderiod_NFT_CONTRACT_ADDRESS, TradioABI, signer);
+        const tokenURIs = await contract.getAllTokenURIs();
+        let index = 0;
+        for (const uri of tokenURIs) {
+            const data = await storage.download(uri);
+            const metadataResponse = await fetch(data.url);
+            const metadata = await metadataResponse.json();
+            if(metadata.id === pickedBot.id) {
+                console.log(metadata)
+                const botWalletAddress = await contract.BotsWalletAddresses(index);
+                console.log(invesmentAmount)
+                const TraderoidAccountContract = new ethers.Contract(botWalletAddress, TraderoidAccountABI, signer);
+                const amountInWei = ethers.utils.parseEther(invesmentAmount);
+                console.log(amountInWei);
+                console.log(botWalletAddress)
+                const tx = await TraderoidAccountContract.invest({ value: amountInWei });
+                await tx.wait();
+                break;
+            }
+            index += 1;
+        }
+    }
+  }
 
   useEffect(() => {
     setAmountInUSD(parseFloat(invesmentAmount * 22.14))
@@ -29,7 +67,7 @@ const InvestModal = () => {
     <Background>
         <ModalBody>
         <TopBanner>
-            <ModalTopBannerHeader>Invest in MusaBot</ModalTopBannerHeader>
+            <ModalTopBannerHeader>Invest in {pickedBot?.name}</ModalTopBannerHeader>
             <CloseIcon onClick={() => setShowInvestModal(false)}/>
         </TopBanner>
 
@@ -55,7 +93,7 @@ const InvestModal = () => {
                         Your remaining Avalanche balance:
                     </ModalTotalAvalancheSpan>
                     <ModalTotalAvalancheNumber>
-                        {parseFloat(balance.displayValue).toFixed(3)}
+                        {parseFloat(balance.displayValue).toFixed(5)}
                     </ModalTotalAvalancheNumber>
                 </TotalAmountRow>
 
@@ -69,9 +107,9 @@ const InvestModal = () => {
                 </TotalAmountRow>
             </TotalAmountColumn>
             
-            <CTAButton>
-            <InvestIcon />
-            invest
+            <CTAButton onClick={handleInvest}>
+                <InvestIcon />
+                invest
             </CTAButton>
         </BottomContent>
         </ModalBody>

@@ -12,14 +12,17 @@ import LINK from '@/public/images/assets/LINK.webp'
 import MANA from '@/public/images/assets/MANA.webp'
 import MATIC from '@/public/images/assets/MATIC.webp'
 import UNI from '@/public/images/assets/UNI.webp'
-import InvestButton from './InvestButton'
-import { useStateContext } from '@/context/StateContext';
-import { useAddress } from '@thirdweb-dev/react';
+import ButtonRenderer from './ButtonRenderer'
+import { useAddress, useSigner } from '@thirdweb-dev/react';
+import TraderoidAccountABI from "@/contracts/abi/TraderoidAccountABI.json"
+import { ethers } from 'ethers';
 
 const BotCard = ({ bot_object, myPortfolio }) => {
 
     // MAIN VARIBLES
+    const [ hasInvested, setHasInvested ] = useState(false);
     const userAddress = useAddress();
+    const signer = useSigner();
     const myBots = Boolean(bot_object.manger == userAddress)
     
     const cryptoImages = {
@@ -34,7 +37,17 @@ const BotCard = ({ bot_object, myPortfolio }) => {
     const [profitLossRatio, setProfitLossRatio] = useState(0); 
     useEffect(() => {
       setProfitLossRatio(getRandomProfitLossRatio());
-    }, []);
+      const asyncFunc = async () => {
+        if(bot_object.walletAddress){
+            const TraderoidAccountContract = new ethers.Contract(bot_object.walletAddress, TraderoidAccountABI, signer);
+            const BOTinvesmentAmount = await TraderoidAccountContract.investments(userAddress) 
+            if(BOTinvesmentAmount > 0){
+                setHasInvested(true)
+            }
+        }
+      }
+      asyncFunc()
+    }, [bot_object]);
 
     // HELPER FUNCTIONS
     const getRandomProfitLossRatio = () => {
@@ -110,18 +123,9 @@ const BotCard = ({ bot_object, myPortfolio }) => {
                             </BotCardFeeLabel>
                         </FeeColumn>
                     )}
-                    {myPortfolio && (
-                        <>
-                        <InvestButton withdraw/>
-                        <InvestButton investMore/>
-                        </>
-                    )}
-                    {!myPortfolio && !myBots && ( // MARKETPLACE
-                        <InvestButton />
-                    )}
-                    {myBots && (
-                        <InvestButton myBots/>
-                    )}
+                     
+                     <ButtonRenderer bot_object={bot_object} hasInvested={hasInvested}/>
+                        
                 </BottommostRow>
 
             </BottomContainer>

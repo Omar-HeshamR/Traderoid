@@ -25,13 +25,19 @@
 		"type": "event"
 	},
 	{
-		"inputs": [],
-		"name": "currentWalletValue",
-		"outputs": [
+		"inputs": [
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"name": "AssetAddresses",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -39,9 +45,111 @@
 	},
 	{
 		"inputs": [],
+		"name": "ScriptExecuterAdress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "SushiSwapRouter",
+		"outputs": [
+			{
+				"internalType": "contract ISushiSwapRouter",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "_encryptedSecretsUrls",
+				"type": "bytes"
+			},
+			{
+				"internalType": "uint8",
+				"name": "_donHostedSecretsSlotID",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint64",
+				"name": "_donHostedSecretsVersion",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string[]",
+				"name": "_args",
+				"type": "string[]"
+			},
+			{
+				"internalType": "bytes[]",
+				"name": "_bytesArgs",
+				"type": "bytes[]"
+			},
+			{
+				"internalType": "uint64",
+				"name": "_subscriptionId",
+				"type": "uint64"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_gasLimit",
+				"type": "uint32"
+			}
+		],
+		"name": "excuteScript",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "functionType",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountIn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountOut",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address[]",
+						"name": "path",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "deadline",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct TraderoidERC6551Account.SwapParams",
+				"name": "params",
+				"type": "tuple"
+			}
+		],
 		"name": "excuteTrade",
 		"outputs": [],
-		"stateMutability": "view",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -77,6 +185,38 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "percentToWithdraw",
+				"type": "uint256"
+			}
+		],
+		"name": "getUserEstimateWithdrawValue",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getWalletValue",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
 				"name": "_managementFeePercentage",
 				"type": "uint256"
 			},
@@ -84,6 +224,11 @@
 				"internalType": "address payable",
 				"name": "_platformAdmin",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_sourceCode",
+				"type": "string"
 			}
 		],
 		"name": "initialize",
@@ -194,6 +339,32 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "priceCalculatorContract",
+		"outputs": [
+			{
+				"internalType": "contract IPullPrices",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "sourceCode",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "bytes4",
@@ -237,7 +408,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "totalInvested",
+		"name": "totalShares",
 		"outputs": [
 			{
 				"internalType": "uint256",

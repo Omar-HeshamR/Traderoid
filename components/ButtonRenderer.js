@@ -1,38 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { COLORS } from '@/library/theme'
 import { SIZING } from '@/library/sizing'
 import { MdOutlineAutoGraph } from "react-icons/md";
-import { useStateContext } from '@/context/StateContext';
+import { useStateContext } from '@/context/StateContext';;
 
-const InvestButton = ({withdraw, investMore, myBots}) => {
+const ButtonRenderer = ({ bot_object, hasInvested }) => {
 
-  const { setShowInvestModal, setShowWithdrawModal } = useStateContext();
-  let buttonText = "invest";
-
-  if (withdraw) {
-    buttonText = "withdraw";
-  } else if (investMore) {
-    buttonText = "invest more";
-  } else if (myBots) {
-    buttonText = "view stats";
-  }
-
-  function modalshow(){
-    if(buttonText = "invest"){
-      setShowInvestModal(true)
-    }else if(buttonText == "withdraw"){
-      setShowWithdrawModal(true)
-    }
-  }
+  const { setShowInvestModal, setShowWithdrawModal, setPickedBot } = useStateContext();
 
   return (
-    <Button withdraw={withdraw} myBots={myBots} onClick={() => modalshow()} >
-        {!withdraw && !myBots && (
-          <InvestIcon />
-        )}
-        {buttonText}
-    </Button>
+    <>
+      {hasInvested &&
+      <Button withdraw={true} onClick={() => {setPickedBot(bot_object);setShowWithdrawModal(true);}} >
+        withdraw
+      </Button>}
+      <Button withdraw={false} onClick={() => {setPickedBot(bot_object);setShowInvestModal(true)}} >
+        <InvestIcon />
+        Invest
+      </Button>
+    </>
   )
 }
 
@@ -62,4 +49,4 @@ const InvestIcon = styled(MdOutlineAutoGraph)`
 font-size: ${SIZING.px16};
 `
 
-export default InvestButton
+export default ButtonRenderer

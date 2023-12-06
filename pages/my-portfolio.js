@@ -47,11 +47,11 @@ const MyPortfolio = () => {
         });
         const results = await Promise.all(dataPromises);
         setNftData(invested_NFTs);
-        set_total_invesment_amount(total_invesment_amount_inner);
+        set_total_invesment_amount(total_invesment_amount_inner / (10**18));
         setLoadingProfile(false);
     }
     asyncFunc()
-  }, [signer])
+  }, [signer, userAddress])
 
   return (
     <Section>

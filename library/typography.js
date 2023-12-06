@@ -189,6 +189,7 @@ font-family: "Uncut Sans Medium";
 `
 export const ModalTopBannerHeader = styled.span`
 width: 90%;
+line-height: normal;
 font-size: ${SIZING.px24};
 letter-spacing: -0.1rem;
 color: ${COLORS.Black200};
@@ -223,5 +224,16 @@ font-family: "Uncut Sans Medium";
 export const ModalTotalAvalancheNumber = styled.span`
 font-size: ${SIZING.px16};
 color: ${COLORS.Black300};
+font-family: "Uncut Sans Medium";
+`
+export const BotCreationWorkspaceSuccessSpan = styled.span`
+font-size: ${SIZING.px24};
+color: ${COLORS.Black100};
+font-family: "Uncut Sans Medium";
+`
+export const ModalSuccessSpan = styled.span`
+text-align: center;
+font-size: ${SIZING.px24};
+color: ${COLORS.Black100};
 font-family: "Uncut Sans Medium";
 `

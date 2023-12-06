@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import { COLORS } from '@/library/theme';
 import { SIZING } from '@/library/sizing';
 import { ModalTopBannerHeader, ModalInputLabel, 
 ModalTotalAmountSpan, ModalTotalAmountNumber, ModalTotalAvalancheSpan,
-ModalTotalAvalancheNumber } from '@/library/typography';
+ModalTotalAvalancheNumber, ModalSuccessSpan } from '@/library/typography';
 import { MdClose, MdOutlineAutoGraph } from 'react-icons/md';
 import Image from 'next/image';
 import AvalancheLogo from '@/public/images/AvalancheLogo.webp'
@@ -15,6 +15,11 @@ import TraderoidAccountABI from "@/contracts/abi/TraderoidAccountABI.json"
 import TradioABI from "@/contracts/abi/TraderoidABI.json"
 import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
 import { ethers } from 'ethers';
+import ModalLoader from './ModalLoader.js'
+import { MdCheck } from "react-icons/md";
+import Confetti from 'react-confetti'
+
+
 
 const InvestModal = () => {
   
@@ -23,6 +28,9 @@ const InvestModal = () => {
   const {showInvestModal, setShowInvestModal} = useStateContext();
   const [ invesmentAmount, setInvesmentAmount ] = useState(0.00)
   const [ amountInUSD, setAmountInUSD ] = useState(0.00);
+  const [ showLoader, setShowLoader ] = useState(false)
+  const [ showSuccess, setShowSuccess ] = useState(false)
+  const [ showError, setShowError ] = useState(true)
   const signer = useSigner();
   const storage = useStorage();
 
@@ -61,57 +69,127 @@ const InvestModal = () => {
     setAmountInUSD(parseFloat(invesmentAmount * 22.14))
   }, [invesmentAmount])
 
+  const confettiColors = [COLORS.PigmentGreen500,
+    COLORS.PigmentGreen600, COLORS.PigmentGreen700Default,
+    COLORS.PigmentGreen800, COLORS.PigmentGreen900,
+    COLORS.DartmouthGreen100, COLORS.DartmouthGreen600,
+    COLORS.DartmouthGreen800, COLORS.DartmouthGreen900Default
+    ]; 
+
   return (
     <>
+
+
     {showInvestModal &&
     <Background>
+        
+        {showSuccess && <Confetti colors={confettiColors} />}
+
         <ModalBody>
+
+        { showLoader ?  
         <TopBanner>
-            <ModalTopBannerHeader>Invest in {pickedBot?.name}</ModalTopBannerHeader>
+            <ModalTopBannerHeader>
+                Investing in {pickedBot?.name}
+            </ModalTopBannerHeader>
             <CloseIcon onClick={() => setShowInvestModal(false)}/>
         </TopBanner>
+        :
+        showSuccess ? 
+        <TopBanner>
+            <ModalTopBannerHeader>
+                Congrats!
+            </ModalTopBannerHeader>
+            <CloseIcon onClick={() => setShowInvestModal(false)}/>
+        </TopBanner>
+        :
+        showError ?
+        <TopBanner>
+            <ModalTopBannerHeader>
+                ERROR
+            </ModalTopBannerHeader>
+            <CloseIcon onClick={() => setShowInvestModal(false)}/>
+        </TopBanner>
+        :
+        <TopBanner>
+            <ModalTopBannerHeader>
+                Invest in {pickedBot?.name}
+            </ModalTopBannerHeader>
+            <CloseIcon onClick={() => setShowInvestModal(false)}/>
+        </TopBanner>
+        }
+
 
         <BottomContent>
-            <LabelAndInputColumn>
-                <ModalInputLabel htmlFor="botAddress">
-                    Please enter your investment amount in Avalanche
-                </ModalInputLabel>
-                <InputWrapper>
-                <Input  
-                    value={invesmentAmount}
-                    onChange={(e) => setInvesmentAmount(e.target.value)}
-                    placeholder="00.0"
-                    type="number"
-                    />
-                <Image src={AvalancheLogo} alt="Avalanche" />
-                </InputWrapper>
-            </LabelAndInputColumn>
 
-            <TotalAmountColumn>
-                <TotalAmountRow>
-                    <ModalTotalAvalancheSpan>
-                        Your remaining Avalanche balance:
-                    </ModalTotalAvalancheSpan>
-                    <ModalTotalAvalancheNumber>
-                        {parseFloat(balance.displayValue).toFixed(5)}
-                    </ModalTotalAvalancheNumber>
-                </TotalAmountRow>
+            { showLoader ?  
+                <LoaderWrapper>
+                    <ModalLoader/>
+                </LoaderWrapper>
+            :
+            showSuccess ? 
+                <SuccessWrapper>
+                    <ModalSuccessSpan>
+                        You have successfully invested in {pickedBot?.name}
+                    </ModalSuccessSpan>
+                    <CheckContainer>
+                        <CheckmarkIcon />
+                    </CheckContainer>
+                </SuccessWrapper>
+            :
+            showError ?
+                <SuccessWrapper>
+                    <ModalSuccessSpan>
+                        There was an error in processing your request. 
+                        Please try again.
+                    </ModalSuccessSpan>
+                </SuccessWrapper>
+            :
+            <>
+                <LabelAndInputColumn>
+                    <ModalInputLabel htmlFor="botAddress">
+                        Please enter your investment amount in Avalanche
+                    </ModalInputLabel>
+                    <InputWrapper>
+                    <Input  
+                        value={invesmentAmount}
+                        onChange={(e) => setInvesmentAmount(e.target.value)}
+                        placeholder="00.0"
+                        type="number"
+                        />
+                    <Image src={AvalancheLogo} alt="Avalanche" />
+                    </InputWrapper>
+                </LabelAndInputColumn>
 
-                <TotalAmountRow>
-                    <ModalTotalAmountSpan>
-                        Your total investment amount in USD:
-                    </ModalTotalAmountSpan>
-                    <ModalTotalAmountNumber>
-                        $ {amountInUSD.toFixed(2)}
-                    </ModalTotalAmountNumber>
-                </TotalAmountRow>
-            </TotalAmountColumn>
-            
-            <CTAButton onClick={handleInvest}>
-                <InvestIcon />
-                invest
-            </CTAButton>
+                <TotalAmountColumn>
+                    <TotalAmountRow>
+                        <ModalTotalAvalancheSpan>
+                            Your remaining Avalanche balance:
+                        </ModalTotalAvalancheSpan>
+                        <ModalTotalAvalancheNumber>
+                            {parseFloat(balance.displayValue).toFixed(5)}
+                        </ModalTotalAvalancheNumber>
+                    </TotalAmountRow>
+
+                    <TotalAmountRow>
+                        <ModalTotalAmountSpan>
+                            Your total investment amount in USD:
+                        </ModalTotalAmountSpan>
+                        <ModalTotalAmountNumber>
+                            $ {amountInUSD.toFixed(2)}
+                        </ModalTotalAmountNumber>
+                    </TotalAmountRow>
+                </TotalAmountColumn>
+                
+                <CTAButton onClick={handleInvest}>
+                    <InvestIcon />
+                    invest
+                </CTAButton>
+            </>
+            }
+
         </BottomContent>
+
         </ModalBody>
     </Background>
     }</>
@@ -159,12 +237,15 @@ fill: ${COLORS.Black400};
 `
 const BottomContent = styled.div`
 display: flex;
-flex-direction: column;
+align-items: center;
 padding-top: ${SIZING.px24};
 padding-left: ${SIZING.px32};
 padding-right: ${SIZING.px32};
 padding-bottom: ${SIZING.px32};
 gap: ${SIZING.px24};
+`
+const LoaderWrapper = styled.div`
+margin: auto;
 `
 const LabelAndInputColumn = styled.div`
 display: flex;
@@ -250,5 +331,46 @@ display: flex;
 flex-direction: column;
 gap: ${SIZING.px8};
 `
+const SuccessWrapper = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+margin: auto;
+gap: ${SIZING.px32};
+`
+const checkmarkAnimation = keyframes`
+0% {
+opacity: 0;
+}
+100% {
+opacity: 1;
+}
+`
+const checkmarkContainerAnimation = keyframes`
+0% {
+background-color: transparent;
+border-radius: ${SIZING.px8};
+}
+100% {
+background-color: ${COLORS.DartmouthGreen900Default};
+border-radius: 50%;
+}
+`
+
+const CheckContainer = styled.div`
+padding: ${SIZING.px12};
+animation: ${checkmarkContainerAnimation} 1s forwards;
+animation-delay: 1.4s;
+`
+
+const CheckmarkIcon = styled(MdCheck)`
+font-size: ${SIZING.px32};
+fill: ${COLORS.Black100};
+opacity: 0;
+animation: ${checkmarkAnimation} 1s forwards;
+animation-delay: 0.4s;
+`
+
 
 export default InvestModal

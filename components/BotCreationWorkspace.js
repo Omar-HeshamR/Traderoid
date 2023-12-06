@@ -1,17 +1,22 @@
-import React, { useState, useRef } from 'react';
-import styled from 'styled-components'
+import React, { useState, useRef, useEffect } from 'react';
+import styled, {keyframes} from 'styled-components'
 import { COLORS } from '@/library/theme'
 import { SIZING } from '@/library/sizing'
 import { BotCreationWorkspaceInputLabel, BotCreationWorkspaceTagItem, 
 BotCreationWorkspaceScriptConfigurationLabel, BotCreationWorkspaceUnderlinedSpan,
 BotCreationWorkspaceDragAndDropYourScriptSpan, BotCreationWorkspaceOrSpan,
-BotCreationWorkspaceAffirmationSpan, BotCreationWorkspaceFileNameSpan } from '@/library/typography'
+BotCreationWorkspaceAffirmationSpan, BotCreationWorkspaceFileNameSpan,
+BotCreationWorkspaceSuccessSpan } from '@/library/typography'
 import { MdClose } from "react-icons/md";
 import { MdCloudUpload } from "react-icons/md";
 import { useStorage, useAddress, useSigner } from '@thirdweb-dev/react';
 import { ethers } from 'ethers';
+import CreatingBotLoader from './CreatingBotLoader.js'
 import TradioABI from "@/contracts/abi/TraderoidABI.json"
 import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
+import { MdCheck } from "react-icons/md";
+
+
 const crypto = require('crypto');
 
 const BotCreationWorkspace = () => {
@@ -21,6 +26,7 @@ const BotCreationWorkspace = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedAssets, setSelectedAssets] = useState([]);
   const [uploadedFileName, setUploadedFileName] = useState(null);
+  const [isMinting, setisMinting] = useState(false);
 
   const ManagementFee = useRef();
   const PerformanceFee = useRef()
@@ -31,7 +37,6 @@ const BotCreationWorkspace = () => {
   const userAddress = useAddress();
   const signer = useSigner();
 
-  const [isMinting, setIsMinting] = useState(false)
   const [mintMessege, setMintMessege] = useState('')
   async function handleNFTmint(){
     setIsMinting(true)
@@ -120,6 +125,19 @@ const BotCreationWorkspace = () => {
 
   return (
     <Section>
+
+        {/* {isMinting ? (
+        <LoadingContainer>
+
+            <LoadingSpan>
+                Minting your Traderoid...
+            </LoadingSpan>
+
+            <CreatingBotLoader />
+
+        </LoadingContainer>
+        ):(
+        <>
         <LabelAndInputColumn>
             <BotCreationWorkspaceInputLabel htmlFor="botName">
                 Name of your bot
@@ -277,7 +295,22 @@ const BotCreationWorkspace = () => {
         <CreateBotButton onClick={handleNFTmint} disabled={isMinting} >
             Create
         </CreateBotButton>  
-        {mintMessege && <>{mintMessege}</>}
+        </>
+        )} */}
+
+        <LoadingContainer>
+    
+            <BotCreationWorkspaceSuccessSpan>
+                Success! Your Traderdoid has been minted!
+            </BotCreationWorkspaceSuccessSpan>
+
+            <CheckContainer>
+                <CheckmarkIcon />
+            </CheckContainer>
+
+        </LoadingContainer>
+
+
     </Section>
   )
 }
@@ -485,5 +518,65 @@ cursor: pointer;
 background-color: ${COLORS.DartmouthGreen800};
 }
 `
+const LoadingContainer = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+height: ${SIZING.px480};
+justify-content: center;
+gap: ${SIZING.px48};
+`
+const loadingSpanAnimation = keyframes`
+0% {
+letter-spacing: -0.15rem;
+}
+50% {
+letter-spacing: -0.12rem;
+}
+100% {
+letter-spacing: -0.15rem;
+}
+`
+const LoadingSpan = styled.div`
+font-size: ${SIZING.px36};
+letter-spacing: -0.15rem;
+color: ${COLORS.Black200};
+font-family: "Uncut Sans Medium";
+animation: ${loadingSpanAnimation} 0.4s infinite;
+`
+
+const checkmarkAnimation = keyframes`
+0% {
+opacity: 0;
+}
+100% {
+opacity: 1;
+}
+`
+const checkmarkContainerAnimation = keyframes`
+0% {
+background-color: transparent;
+border-radius: ${SIZING.px8};
+}
+100% {
+background-color: ${COLORS.DartmouthGreen900Default};
+border-radius: 50%;
+}
+`
+
+const CheckContainer = styled.div`
+padding: ${SIZING.px24};
+animation: ${checkmarkContainerAnimation} 1s forwards;
+animation-delay: 1.4s;
+`
+
+const CheckmarkIcon = styled(MdCheck)`
+font-size: ${SIZING.px64};
+fill: ${COLORS.Black100};
+opacity: 0;
+animation: ${checkmarkAnimation} 1s forwards;
+animation-delay: 0.4s;
+`
+
 
 export default BotCreationWorkspace

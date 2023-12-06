@@ -136,15 +136,15 @@ const Chat = () => {
         )}
 
         {showLoader ? (
-            <LoadingContaner>
+            <LoadingContainer>
 
                 <LoadingSpan>
                     Analyzing market data...
                 </LoadingSpan>
 
-                <ChatLoader />
+                <Loader />
                 
-            </LoadingContaner>
+            </LoadingContainer>
         ):<>
         {showChatContainer && (
             <ChatContainer ref={chatContainerRef}>
@@ -295,7 +295,7 @@ max-height: ${SIZING.px416};
 overflow-y: scroll;
 overflow-x: hidden;
 `
-const LoadingContaner = styled.div`
+const LoadingContainer = styled.div`
 display: flex;
 flex-direction: column;
 align-items: center;

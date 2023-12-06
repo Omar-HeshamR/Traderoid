@@ -9,10 +9,17 @@ import styled from 'styled-components'
 const Documentation = () => {
 
   const router = useRouter();
+
   function scrollFunc(spanId){
     const element = document.getElementById(spanId);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+    const container = document.getElementById('content-container');
+    if (element && container) {
+        const elementRect = element.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        container.scrollBy({
+            top: elementRect.top - containerRect.top,
+            behavior: 'smooth'
+        });
     }
   }
 
@@ -29,7 +36,7 @@ const Documentation = () => {
             </ButtonContainer>
         </DocsNav>
         <TotalHoldingRow>
-            <MainContentContainer>
+            <MainContentContainer id='content-container'>
                 
                 <MainHeader>Creating a Script & Bot Full Documentation</MainHeader>
 
@@ -62,6 +69,7 @@ flex-direction: row;
 justify-content: space-between;
 align-items: center;
 background-color: ${COLORS.Black875};
+position: sticky;
 `
 
 const LogoContainer = styled.div`
@@ -112,7 +120,21 @@ padding-left: ${SIZING.px24};
 width: 80vw;
 gap: 40vw;
 overflow-y: scroll;
+overflow-y: scroll;
 
+&::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+  height: 8px;
+}
+
+&::-webkit-scrollbar-thumb {
+    border-radius: ${SIZING.px12};
+    background-color: ${COLORS.Black600};
+}
+  
+-ms-overflow-style: auto;
+scrollbar-width: auto;
 `
 
 const MainHeader = styled.span`

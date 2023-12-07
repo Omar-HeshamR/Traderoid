@@ -10,7 +10,7 @@ MyPortfolioChartUnselectedToggleSpan } from '@/library/typography';
 import { MdArrowDropDownCircle } from "react-icons/md";
 
 
-const MyPortfolioChart = ({total_invesment_amount}) => {
+const MyPortfolioChart = ({total_invesment_amount , nftData}) => {
 
   const [selectedItem, setSelectedItem] = useState('Chart'); 
 
@@ -39,7 +39,7 @@ const MyPortfolioChart = ({total_invesment_amount}) => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [1106.89, 1209.01, 1481.03, 1282.67, 1209.31, 1578.93], 
+        data: [0, 0, 0, 0, 0, total_invesment_amount], 
       },
     ],
   };
@@ -55,17 +55,16 @@ const MyPortfolioChart = ({total_invesment_amount}) => {
     scales: {
       y: {
         beginAtZero: false,
-        suggestedMax: 1500, // Set the maximum value
       }      
     },
   };
 
   const allocationData = {
-    labels: ['MusaBot', 'Shrimpy', 'TrilloBot'],
+    labels: nftData.map(object => object.name),
     datasets: [
       {
         borderWidth: 0,
-        data: [30, 40, 30],
+        data: nftData.map(object => ((Number(object.BOTinvesmentAmount)/(total_invesment_amount*10**18))*100).toFixed(2)),
         backgroundColor: [COLORS.PigmentGreen900, COLORS.PigmentGreen800, COLORS.PigmentGreen700Default],
         fill: false,
         pointBackgroundColor: '#e6194b'
@@ -117,7 +116,6 @@ const MyPortfolioChart = ({total_invesment_amount}) => {
     
     
   };
-
 
 
   const randomPercentage = Math.round((Math.random() * 200) - 50)/100;

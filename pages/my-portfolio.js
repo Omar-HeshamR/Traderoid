@@ -17,7 +17,7 @@ const MyPortfolio = () => {
 
   const [ loadingProfile, setLoadingProfile ] = useState(true);
   const [ total_invesment_amount, set_total_invesment_amount] = useState();
-  const [nftData, setNftData] = useState([]);
+  const [ nftData, setNftData ] = useState([]);
   const signer = useSigner();
   const storage = useStorage();
   const userAddress = useAddress();
@@ -38,6 +38,7 @@ const MyPortfolio = () => {
           metadata.walletAddress = botWalletAddress;
           const TraderoidAccountContract = new ethers.Contract(botWalletAddress, TraderoidAccountABI, signer);
           const BOTinvesmentAmount = await TraderoidAccountContract.investments(userAddress) 
+          metadata.BOTinvesmentAmount = BOTinvesmentAmount;
           total_invesment_amount_inner += Number(BOTinvesmentAmount);
           console.log(Number(BOTinvesmentAmount))
           if(BOTinvesmentAmount > 0){
@@ -66,7 +67,7 @@ const MyPortfolio = () => {
           <div>Loading Profile..</div>
         : <>
         
-        <MyPortfolioChart total_invesment_amount={total_invesment_amount}/>
+        <MyPortfolioChart total_invesment_amount={total_invesment_amount} nftData={nftData}/>
 
         <BotsYouHaveInvestedInHeader>
           Bots you&apos;ve invested in

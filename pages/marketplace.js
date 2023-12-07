@@ -44,9 +44,10 @@ const Marketplace = () => {
         <TopBar header="Explore trending bots" type="filter"/>
 
         <CardGrid>
-          {nftData.map((botObject, index) => (
+          {nftData.length > 0 ?
+          nftData.map((botObject, index) => (
               <BotCard bot_object={botObject} key={index}/>
-          ))}
+          )) : <dic>Loading Traderoids...</dic>}
         </CardGrid>
 
       </ScrollableContainer>

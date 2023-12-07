@@ -19,8 +19,6 @@ import ModalLoader from './ModalLoader.js'
 import { MdCheck } from "react-icons/md";
 import Confetti from 'react-confetti'
 
-
-
 const InvestModal = () => {
   
   const { pickedBot } = useStateContext();

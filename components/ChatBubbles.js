@@ -37,7 +37,7 @@ const ChatBubbles = ({ messages }) => {
           <ChatBubble isUser={true} message={pair.user} />
           <IconAndTextRow>
             <RobotIcon />
-            <ChatBubble isUser={false} message={pair.assistant} />
+            <ChatBubble isUser={false} messages={messages} message={pair.assistant} index={index}/>
           </IconAndTextRow>
         </div>
       ))}
@@ -45,11 +45,11 @@ const ChatBubbles = ({ messages }) => {
   );
 };
 
-const ChatBubble = ({ isUser, message }) => {
+const ChatBubble = ({ isUser, message, messages, index }) => {
   return (
     <BubbleWrapper isUser={isUser}>
       <BubbleContent isUser={isUser}>
-        {isUser ? (
+        {!(isUser == false && index == messages.length - 1) ? (
           <ChatMessageText>{message}</ChatMessageText>
         ) : (
           <Typewriter text={message} speed={20} />

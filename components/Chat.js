@@ -11,8 +11,6 @@ ChatGridNormalSpan, ChatGridBoldSpan} from '@/library/typography';
 import { AssistantChatBubble } from './ChatBubbles';
 import { MdArrowUpward } from "react-icons/md";
 import ChatLoader from './ChatLoader.js'
-import OpenAI from "openai";
-require('dotenv').config();
 
 const Chat = () => {
   
@@ -26,6 +24,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const userMessageRef = useRef();
   const chatContainerRef = useRef(null);
+  const chatContainer = chatContainerRef.current;
 
   useEffect(() => {
     const chatContainer = chatContainerRef.current;
@@ -47,7 +46,7 @@ const Chat = () => {
     
     const prompt = userMessageRef.current.value.trim();
 
-    if (prompt !== '') {
+    if (prompt !== '' && showLoader == false) {
         try {
             setShowInitialScreen(false);
             setShowLoader(true)
@@ -142,7 +141,7 @@ const Chat = () => {
                     Analyzing market data...
                 </LoadingSpan>
 
-                <Loader />
+                <ChatLoader />
                 
             </LoadingContainer>
         ):<>

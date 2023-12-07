@@ -90,7 +90,6 @@ const BotCard = ({ bot_object, myPortfolio }) => {
             </TopContainer>
             <DividingLine />
             <BottomContainer>
-                {!myPortfolio && (
                     <AssetsRow>
                         <BotCardAssetsText>
                             Assets:
@@ -107,12 +106,11 @@ const BotCard = ({ bot_object, myPortfolio }) => {
                             ))}
                         </AssetImagesRow>
                     </AssetsRow>
-                )}
                 <BotCardDescription>
                     {bot_object.description ? bot_object.description : "This bot has no provided description"}
                 </BotCardDescription>
                 <BottommostRow>
-                    {!myPortfolio && !myBots && (
+                    {!hasInvested && (
                         <FeeColumn>
                             <BotCardFeeLabel>
                                 Management Fee: &nbsp;

@@ -5,7 +5,7 @@ import TopBar from '@/components/TopBar'
 import Chart from 'chart.js/auto'
 import { COLORS } from '@/library/theme';
 import { SIZING } from '@/library/sizing';
-import {Section, ScrollableContainer, CardGrid} from '@/library/structure'
+import { Section, ScrollableContainer, CardGrid } from '@/library/structure'
 import MyPortfolioChart from '@/components/MyPortfolioChart'
 import BotCard from '@/components/BotCard'
 import { useAddress, useStorage, useSigner } from '@thirdweb-dev/react';

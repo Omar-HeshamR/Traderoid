@@ -15,7 +15,7 @@ import CreatingBotLoader from './CreatingBotLoader.js'
 import TradioABI from "@/contracts/abi/TraderoidABI.json"
 import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
 import { MdCheck } from "react-icons/md";
-
+import Confetti from 'react-confetti'
 
 const crypto = require('crypto');
 
@@ -26,7 +26,7 @@ const BotCreationWorkspace = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedAssets, setSelectedAssets] = useState([]);
   const [uploadedFileName, setUploadedFileName] = useState(null);
-  const [isMinting, setisMinting] = useState(false);
+  const [isMinting, setIsMinting] = useState(false);
 
   const ManagementFee = useRef();
   const PerformanceFee = useRef()
@@ -38,6 +38,7 @@ const BotCreationWorkspace = () => {
   const signer = useSigner();
 
   const [mintMessege, setMintMessege] = useState('')
+
   async function handleNFTmint(){
     setIsMinting(true)
     try{
@@ -64,7 +65,7 @@ const BotCreationWorkspace = () => {
     setIsMinting(false)
     }catch(err){
         console.log(err)
-        setMintMessege(err.toString())
+        setMintMessege(`Error: ${err.toString()}`)
         setIsMinting(false)
     }
   }
@@ -123,10 +124,17 @@ const BotCreationWorkspace = () => {
     }
   };
 
+  const confettiColors = [COLORS.PigmentGreen500,
+    COLORS.PigmentGreen600, COLORS.PigmentGreen700Default,
+    COLORS.PigmentGreen800, COLORS.PigmentGreen900,
+    COLORS.DartmouthGreen100, COLORS.DartmouthGreen600,
+    COLORS.DartmouthGreen800, COLORS.DartmouthGreen900Default
+    ]; 
+
   return (
     <Section>
 
-        {/* {isMinting ? (
+        {isMinting ? (
         <LoadingContainer>
 
             <LoadingSpan>
@@ -136,7 +144,8 @@ const BotCreationWorkspace = () => {
             <CreatingBotLoader />
 
         </LoadingContainer>
-        ):(
+        ):(<>
+        { mintMessege == '' && 
         <>
         <LabelAndInputColumn>
             <BotCreationWorkspaceInputLabel htmlFor="botName">
@@ -295,11 +304,12 @@ const BotCreationWorkspace = () => {
         <CreateBotButton onClick={handleNFTmint} disabled={isMinting} >
             Create
         </CreateBotButton>  
-        </>
-        )} */}
+        </>}</>
+        )}
 
+        {mintMessege == "NFT Minted!" &&
         <LoadingContainer>
-    
+            <Confetti colors={confettiColors} />
             <BotCreationWorkspaceSuccessSpan>
                 Success! Your Traderdoid has been minted!
             </BotCreationWorkspaceSuccessSpan>
@@ -309,7 +319,16 @@ const BotCreationWorkspace = () => {
             </CheckContainer>
 
         </LoadingContainer>
+        }
+        {mintMessege.startsWith('Error:') &&
+          <LoadingContainer>
+    
+          <BotCreationWorkspaceSuccessSpan>
+              {mintMessege}
+          </BotCreationWorkspaceSuccessSpan>
 
+        </LoadingContainer>      
+        }
 
     </Section>
   )

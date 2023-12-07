@@ -140,7 +140,7 @@ const MyPortfolioChart = ({total_invesment_amount}) => {
             <MyPortfolioChartDollarSignSpan>
               $&nbsp;
             </MyPortfolioChartDollarSignSpan>
-            {total_invesment_amount}
+            {total_invesment_amount.toFixed(8)}
           </MyPortfolioChartCurrentBalanceNumber>
           <ChangeInPercentage isNegative={isNegativePercentage}>
             <ChangeInPercentageIcon isNegative={isNegativePercentage}/>

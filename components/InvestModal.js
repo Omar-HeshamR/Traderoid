@@ -5,7 +5,7 @@ import { SIZING } from '@/library/sizing';
 import { ModalTopBannerHeader, ModalInputLabel, 
 ModalTotalAmountSpan, ModalTotalAmountNumber, ModalTotalAvalancheSpan,
 ModalTotalAvalancheNumber, ModalSuccessSpan } from '@/library/typography';
-import { MdClose, MdOutlineAutoGraph } from 'react-icons/md';
+import { MdClose, MdOutlineAutoGraph, MdCheck } from 'react-icons/md';
 import Image from 'next/image';
 import AvalancheLogo from '@/public/images/AvalancheLogo.webp'
 import { useStateContext } from '@/context/StateContext';
@@ -16,7 +16,6 @@ import TradioABI from "@/contracts/abi/TraderoidABI.json"
 import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
 import { ethers } from 'ethers';
 import ModalLoader from './ModalLoader.js'
-import { MdCheck } from "react-icons/md";
 import Confetti from 'react-confetti'
 
 const InvestModal = () => {
@@ -28,17 +27,21 @@ const InvestModal = () => {
   const [ amountInUSD, setAmountInUSD ] = useState(0.00);
   const [ showLoader, setShowLoader ] = useState(false)
   const [ showSuccess, setShowSuccess ] = useState(false)
-  const [ showError, setShowError ] = useState(true)
+  const [ showError, setShowError ] = useState(false)
   const signer = useSigner();
   const storage = useStorage();
 
   useEffect(() => {
     if(!pickedBot){setShowInvestModal(false)}
-  }, [pickedBot])
+    setShowError(false)
+    setShowSuccess(false)    
+  }, [pickedBot, showInvestModal])
 
   async function handleInvest(){
     if(!signer || !pickedBot){return}
     if(pickedBot.id){
+        setShowLoader(true)
+        try{
         const contract = new ethers.Contract(Traderiod_NFT_CONTRACT_ADDRESS, TradioABI, signer);
         const tokenURIs = await contract.getAllTokenURIs();
         let index = 0;
@@ -56,9 +59,14 @@ const InvestModal = () => {
                 console.log(botWalletAddress)
                 const tx = await TraderoidAccountContract.invest({ value: amountInWei });
                 await tx.wait();
+                setShowSuccess(true);
+                setShowLoader(false)
                 break;
             }
             index += 1;
+        }}catch(err){
+            setShowLoader(false);
+            setShowError(true);
         }
     }
   }
@@ -76,12 +84,10 @@ const InvestModal = () => {
 
   return (
     <>
-
-
     {showInvestModal &&
     <Background>
         
-        {showSuccess && <Confetti colors={confettiColors} />}
+        {showSuccess && <Confetti gravity={3} colors={confettiColors} />}
 
         <ModalBody>
 
@@ -143,7 +149,7 @@ const InvestModal = () => {
                     </ModalSuccessSpan>
                 </SuccessWrapper>
             :
-            <>
+            <Column>
                 <LabelAndInputColumn>
                     <ModalInputLabel htmlFor="botAddress">
                         Please enter your investment amount in Avalanche
@@ -183,7 +189,7 @@ const InvestModal = () => {
                     <InvestIcon />
                     invest
                 </CTAButton>
-            </>
+            </Column>
             }
 
         </BottomContent>
@@ -244,6 +250,12 @@ gap: ${SIZING.px24};
 `
 const LoaderWrapper = styled.div`
 margin: auto;
+`
+const Column = styled.div`
+display: flex;
+flex-direction: column;
+width: 100%;
+gap: ${SIZING.px24};
 `
 const LabelAndInputColumn = styled.div`
 display: flex;

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import { COLORS } from '@/library/theme';
 import { SIZING } from '@/library/sizing';
 import { ModalTopBannerHeader, ModalInputLabel, 
-ModalTotalAmountSpan, ModalTotalAmountNumber } from '@/library/typography';
+  ModalTotalAmountSpan, ModalTotalAmountNumber, ModalSuccessSpan } from '@/library/typography';
 import { useSigner, useStorage } from "@thirdweb-dev/react";
-import { MdClose } from 'react-icons/md';
+import { MdClose, MdCheck } from 'react-icons/md';
 import { useStateContext } from '@/context/StateContext';
 import TraderoidAccountABI from "@/contracts/abi/TraderoidAccountABI.json"
 import TradioABI from "@/contracts/abi/TraderoidABI.json"
 import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
 import { ethers } from 'ethers';
+import ModalLoader from './ModalLoader.js'
 
 const WithdrawModal = () => {
 
@@ -21,9 +22,21 @@ const WithdrawModal = () => {
   const signer = useSigner();
   const storage = useStorage();
 
+  const [ showLoader, setShowLoader ] = useState(false);
+  const [ showSuccess, setShowSuccess ] = useState(false);
+  const [ showError, setShowError ] = useState(false);
+
+  useEffect(() => {
+    if(!pickedBot){setShowWithdrawModal(false)}
+    setShowError(false)
+    setShowSuccess(false)    
+  }, [pickedBot, showWithdrawModal])
+
   async function handleWithdraw(){
     if(!signer || !pickedBot){return}
     if(pickedBot.id){
+      try{
+        setShowLoader(true)
         const contract = new ethers.Contract(Traderiod_NFT_CONTRACT_ADDRESS, TradioABI, signer);
         const tokenURIs = await contract.getAllTokenURIs();
         let index = 0;
@@ -38,9 +51,14 @@ const WithdrawModal = () => {
                 const TraderoidAccountContract = new ethers.Contract(botWalletAddress, TraderoidAccountABI, signer);
                 const tx = await TraderoidAccountContract.withdraw(ethers.BigNumber.from(withdrawlPercent));
                 await tx.wait();
+                setShowLoader(false);
+                setShowSuccess(true);
                 break;
             }
             index += 1;
+        }}catch(err){
+          setShowError(true);
+          setShowLoader(false);
         }
     }
   }
@@ -96,13 +114,68 @@ const WithdrawModal = () => {
     <>
     {showWithdrawModal &&
     <Background>
+
       <ModalBody>
+
+      { showLoader ?  
         <TopBanner>
-          <ModalTopBannerHeader>Withdraw from {pickedBot?.name}</ModalTopBannerHeader>
-          <CloseIcon onClick={() => setShowWithdrawModal(false)}/>
+            <ModalTopBannerHeader>
+                Investing in {pickedBot?.name}
+            </ModalTopBannerHeader>
+            <CloseIcon onClick={() => setShowWithdrawModal(false)}/>
         </TopBanner>
+        :
+        showSuccess ? 
+        <TopBanner>
+            <ModalTopBannerHeader>
+                Success!
+            </ModalTopBannerHeader>
+            <CloseIcon onClick={() => setShowWithdrawModal(false)}/>
+        </TopBanner>
+        :
+        showError ?
+        <TopBanner>
+            <ModalTopBannerHeader>
+                ERROR
+            </ModalTopBannerHeader>
+            <CloseIcon onClick={() => setShowWithdrawModal(false)}/>
+        </TopBanner>
+        :
+        <TopBanner>
+            <ModalTopBannerHeader>
+                Withdraw from {pickedBot?.name}
+            </ModalTopBannerHeader>
+            <CloseIcon onClick={() => setShowWithdrawModal(false)}/>
+        </TopBanner>
+        }
 
         <BottomContent>
+
+        { showLoader ?  
+                <LoaderWrapper>
+                    <ModalLoader/>
+                </LoaderWrapper>
+            :
+            showSuccess ? 
+                <SuccessWrapper>
+                    <ModalSuccessSpan>
+                        You have successfully withdrawed {withdrawlPercent}% of 
+                        your stake in {pickedBot?.name}
+                    </ModalSuccessSpan>
+                    <CheckContainer>
+                        <CheckmarkIcon />
+                    </CheckContainer>
+                </SuccessWrapper>
+            :
+            showError ?
+                <SuccessWrapper>
+                    <ModalSuccessSpan>
+                        There was an error in processing your request. 
+                        Please try again.
+                    </ModalSuccessSpan>
+                </SuccessWrapper>
+            : 
+          <>
           <LabelAndInputColumn>
             <ModalInputLabel htmlFor="botAddress">
               Please enter your withdraw percentage
@@ -132,6 +205,7 @@ const WithdrawModal = () => {
           <CTAButton onClick={handleWithdraw}>
             withdraw
           </CTAButton>
+          </>}
         </BottomContent>
       </ModalBody>
     </Background>
@@ -258,5 +332,47 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 `
+const LoaderWrapper = styled.div`
+margin: auto;
+`
+const SuccessWrapper = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+margin: auto;
+gap: ${SIZING.px32};
+`
+const checkmarkAnimation = keyframes`
+0% {
+opacity: 0;
+}
+100% {
+opacity: 1;
+}
+`
+const checkmarkContainerAnimation = keyframes`
+0% {
+background-color: transparent;
+border-radius: ${SIZING.px8};
+}
+100% {
+background-color: ${COLORS.DartmouthGreen900Default};
+border-radius: 50%;
+}
+`
 
+const CheckContainer = styled.div`
+padding: ${SIZING.px12};
+animation: ${checkmarkContainerAnimation} 1s forwards;
+animation-delay: 1.4s;
+`
+
+const CheckmarkIcon = styled(MdCheck)`
+font-size: ${SIZING.px32};
+fill: ${COLORS.Black100};
+opacity: 0;
+animation: ${checkmarkAnimation} 1s forwards;
+animation-delay: 0.4s;
+`
 export default WithdrawModal

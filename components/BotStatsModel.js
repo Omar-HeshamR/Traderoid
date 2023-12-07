@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS } from '@/library/theme'
 import { SIZING } from '@/library/sizing'
@@ -6,6 +6,7 @@ import { ModalTopBannerHeader } from '@/library/typography'
 import { useStateContext } from '@/context/StateContext';
 import { MdClose } from 'react-icons/md';
 import { MdContentCopy } from "react-icons/md";
+import { ethers } from 'ethers'
 import Image from 'next/image'
 import BTC from '@/public/images/assets/Bitcoin.webp'
 import ETH from '@/public/images/assets/ETH.webp'
@@ -14,23 +15,26 @@ import MANA from '@/public/images/assets/MANA.webp'
 import MATIC from '@/public/images/assets/MATIC.webp'
 import UNI from '@/public/images/assets/UNI.webp'
 import AVAX from '@/public/images/assets/AVAX.webp'
-
+import { NATIVE_TOKEN_ADDRESS } from "@thirdweb-dev/sdk";
+import { useSigner, useBalance } from '@thirdweb-dev/react'
+import { PULL_LATEST_PRICES_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES'
 
 const BotStatsModel = () => {
 
   const {showBotStatsModal, setShowBotStatsModal, pickedBot} = useStateContext();
-  console.log(pickedBot)
+  const [ balanceSheet, setBalanceSheet ] = useState();
+  const signer = useSigner();
 
-  const botDescription = `
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
-  nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore 
-  eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt 
-  in culpa qui officia deserunt mollit anim id est laborum.
-  `
-//   console.log(pickedBot?.assets)
-
+  const priceContractAbi = [ "function getLatestAnswers() public view returns (int[])" ];
+  const tokenAbi = ["function balanceOf(address owner) view returns (uint256)"];
+  const tokenAddresses = {
+    BTC: "0x3ed272fa7054a80C5650fCB3788dA000a4EED711",
+    ETH: "0x3766E946C57d281139fAB9656CE50f535E0DfB4d",
+    LINK: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
+    MATIC: "0x3cC861D8f99f60CE1286B1Cef99eAa8fdE7a69c4",
+    MANA: "0xb0C0B9f4F8386883ca3651B03283F3dF4f154199",
+    UNI: "0x97dB2DA85708C4cDB73D9601FDE3C1d4f3a0CdaE"
+  };
   const cryptoImages = {
     "AVAX": AVAX,
     "BTC": BTC,
@@ -40,7 +44,6 @@ const BotStatsModel = () => {
     "MATIC": MATIC,
     "UNI": UNI,
   };
-  
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
       .then(() => {
@@ -52,9 +55,41 @@ const BotStatsModel = () => {
       });
   };
 
+  async function calculateBalances(walletAddress) {
+    const provider = new ethers.providers.JsonRpcProvider('https://api.avax-test.network/ext/bc/C/rpc')
+    // Fetch AVAX balance
+    const avaxBalance = await provider.getBalance(walletAddress);
+    const pricesContract = new ethers.Contract(PULL_LATEST_PRICES_CONTRACT_ADDRESS, priceContractAbi, signer);
+    const latestTokenPrices = await pricesContract.getLatestAnswers();
+    let balances = [{name: "AVAX", balance: ethers.utils.formatEther(avaxBalance), price: latestTokenPrices[0]}];
+    // Fetch balances for each token
+    let i = 1;
+    for (const [tokenName, tokenAddress] of Object.entries(tokenAddresses)) {
+        const tokenContract = new ethers.Contract(tokenAddress, tokenAbi, signer);
+        const balance = await tokenContract.balanceOf(walletAddress);
+        balances.push({name:[tokenName],balance: ethers.utils.formatUnits(balance, 18), price: latestTokenPrices[i]}); // Assuming all tokens have 18 decimals
+        i += 1;
+    }
+    for (let token of balances) {
+        token.price = (token.price / (10**8))
+    }
+    return balances;
+  }
+
+  useEffect(() => {
+    if(pickedBot){
+        const AsyncFunc = async () => {
+            setBalanceSheet(undefined);
+            const balances = await calculateBalances(pickedBot.walletAddress)
+            setBalanceSheet(balances)
+        }
+        AsyncFunc();
+    }
+  }, [pickedBot])
+
   return (
     <>
-        {showBotStatsModal && (
+        {(showBotStatsModal) && (
             <Background>
 
                 <ModalBody>
@@ -66,6 +101,7 @@ const BotStatsModel = () => {
                         <CloseIcon onClick={() => setShowBotStatsModal(false)}/>
                     </TopBanner>
 
+                    { balanceSheet ? 
                     <BottomContent>
                         <AddressRowColumn>
                             <AddressRow>
@@ -98,46 +134,48 @@ const BotStatsModel = () => {
                             </Fee>
                         </FeeRow>
                         <Description>
-                            {botDescription}
+                            Description: {pickedBot?.description}
                         </Description>
+
                         <BalancesHeader>
-                            Balances and Values in USD:
+                            Balance Sheet
                         </BalancesHeader>
                         
                         <BalanceRowsColumn>
-
                         <MasterRow>
                             <BalanceRow>
                                 AVAX:
                             <AmountRow>
-                                100
+                                {Number(balanceSheet[0].balance).toFixed(5)}
                                 <Image src={AVAX} alt='AVAX' />
                             </AmountRow>
                             </BalanceRow>
                             <BalanceRow>
                                 Value:
                             <AmountRow>
-                                5,500&nbsp;USD                                 
+                                {Number(balanceSheet[0].price).toFixed(5)}&nbsp;USD                                 
                             </AmountRow>
                             </BalanceRow>
                         </MasterRow>
 
-                        {pickedBot?.assets.map((asset) => (
+                        {(balanceSheet.slice(1)).map((asset) => (
+                            <>{asset.balance > 0 && 
                             <MasterRow key={asset}>
                                 <BalanceRow>
-                                {asset}:
+                                {asset.name}:
                                 <AmountRow>
-                                    100
-                                    <Image src={cryptoImages[asset]} alt={asset} />
+                                    {Number(asset.balance)}
+                                    <Image src={cryptoImages[asset.name]} alt={asset} />
                                 </AmountRow>
                                 </BalanceRow>
                                 <BalanceRow>
                                 Value:
                                 <AmountRow>
-                                    5,500&nbsp;USD                                 
+                                    {Number(asset.balance * asset.price).toFixed(3)}&nbsp;USD                                 
                                 </AmountRow>
                                 </BalanceRow>
                             </MasterRow>
+                            }</>
                         ))}
 
                         </BalanceRowsColumn>
@@ -145,7 +183,7 @@ const BotStatsModel = () => {
                         <TotalValue>
                             Total wallet value:
                             <TotalValueAmount>
-                                5,500&nbsp;USD
+                                {Number(balanceSheet.reduce((total, item) => {return total + (item.balance * item.price)}, 0)).toFixed(5)}&nbsp;USD
                             </TotalValueAmount>
                         </TotalValue>
 
@@ -153,7 +191,7 @@ const BotStatsModel = () => {
                             invest
                         </InvestButton>
 
-                    </BottomContent>
+                    </BottomContent> : <LoaderDiv>Loading...</LoaderDiv>}
                     
                 </ModalBody>
 
@@ -189,7 +227,7 @@ const TopBanner = styled.div`
 display: flex;
 align-items: center;
 justify-content: space-between;
-padding: ${SIZING.px24} ${SIZING.px32};
+padding: ${SIZING.px20} ${SIZING.px32};
 border-bottom: 2px solid rgba(20, 20, 20, 0.75);
 `
 const CloseIcon = styled(MdClose)`
@@ -249,9 +287,7 @@ justify-content: center;
 gap: ${SIZING.px32};
 margin-top: ${SIZING.px12};
 padding-top: ${SIZING.px12};
-padding-bottom: ${SIZING.px12};
 border-top: 1px solid ${COLORS.Black800};
-border-bottom: 1px solid ${COLORS.Black800};
 `
 const Fee = styled.div`
 display: flex;
@@ -271,7 +307,8 @@ line-height: 120%;
 margin-top: ${SIZING.px12};
 overflow-y: scroll;
 font-size: ${SIZING.px12};
-// border-bottom: 1px solid ${COLORS.Black800};
+border-bottom: 1px solid ${COLORS.Black800};
+padding-bottom: ${SIZING.px12};
 color: ${COLORS.Black400};
 font-family: "Uncut Sans Regular";
 letter-spacing: 0rem;
@@ -288,13 +325,12 @@ background-color: ${COLORS.Black800};
 scrollbar-width: auto;
 `
 const BalancesHeader = styled.span`
-margin-top: ${SIZING.px24};
+margin-top: ${SIZING.px12};
 font-size: ${SIZING.px16};
-padding-bottom: ${SIZING.px12};
-letter-spacing: -0.01rem;
+color: ${COLORS.Black200};
+letter-spacing: -0.02rem;
 font-family: "Uncut Sans Medium";
 // border-bottom: 1px solid ${COLORS.Black800};
-color: ${COLORS.Black300};
 `
 const BalanceRowsColumn = styled.div`
 display: flex;
@@ -365,6 +401,13 @@ cursor: pointer;
 &:hover{
 background-color: ${COLORS.DartmouthGreen900Default};
 }
+`
+
+const LoaderDiv = styled.div`
+padding-top: ${SIZING.px24};
+padding-bottom: ${SIZING.px24};
+padding-left: ${SIZING.px24};
+font-size: ${SIZING.px24};
 `
 
 export default BotStatsModel

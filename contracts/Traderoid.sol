@@ -123,7 +123,7 @@ contract TraderoidERC6551Account is IERC165, IERC1271, IERC6551Account {
         SushiSwapRouter = ISushiSwapRouter(0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506);
         priceCalculatorContract = IPullPrices(0xB0c675e33cc1b246a9287A09983bb9731f2569A9);
         AssetAddresses = [
-            0x3ed272fa7054a80C5650fCB3788dA000a4EED711,
+            0x3ed272fa7054a80C5650fCB3788dA000a4EED711, 
             0x3766E946C57d281139fAB9656CE50f535E0DfB4d,
             0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846,
             0x3cC861D8f99f60CE1286B1Cef99eAa8fdE7a69c4,

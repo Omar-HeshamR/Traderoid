@@ -26,9 +26,13 @@ const BotCard = ({ bot_object, myPortfolio }) => {
 
     // MAIN VARIBLES
     const [ hasInvested, setHasInvested ] = useState(false);
+    const [ hoveringButton, setHoveringButtons ] = useState(false);
     const userAddress = useAddress();
     const signer = useSigner();
     const myBots = Boolean(bot_object.manger == userAddress)
+    useEffect(() => {
+        console.log(hoveringButton)
+    }, [hoveringButton])
     
     const cryptoImages = {
         "BTC": BTC,
@@ -69,7 +73,7 @@ const BotCard = ({ bot_object, myPortfolio }) => {
 
   return (
     <>      
-        <Container onClick={() => {setPickedBot(bot_object);setShowBotStatsModal(true);}}>
+        <Container onClick={() => { if(!hoveringButton){setPickedBot(bot_object);setShowBotStatsModal(true);}}}>
             <TopContainer>
                 <UppermostRow>
                     <BotCardManager>
@@ -127,7 +131,8 @@ const BotCard = ({ bot_object, myPortfolio }) => {
                         </FeeColumn>
                     )}
                      
-                     <ButtonRenderer bot_object={bot_object} hasInvested={hasInvested}/>
+                     <ButtonRenderer setHoveringButtons={setHoveringButtons} bot_object={bot_object} 
+                     hasInvested={hasInvested}/>
                         
                 </BottommostRow>
 

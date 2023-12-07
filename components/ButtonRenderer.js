@@ -5,17 +5,19 @@ import { SIZING } from '@/library/sizing'
 import { MdOutlineAutoGraph } from "react-icons/md";
 import { useStateContext } from '@/context/StateContext';;
 
-const ButtonRenderer = ({ bot_object, hasInvested }) => {
+const ButtonRenderer = ({ bot_object, hasInvested, setHoveringButtons }) => {
 
   const { setShowInvestModal, setShowWithdrawModal, setPickedBot } = useStateContext();
 
   return (
     <>
       {hasInvested &&
-      <Button withdraw={true} onClick={() => {setPickedBot(bot_object);setShowWithdrawModal(true);}} >
+      <Button onMouseEnter={() => setHoveringButtons(true)} onMouseLeave={() => setHoveringButtons(false)}
+       withdraw={true} onClick={() => {setPickedBot(bot_object);setShowWithdrawModal(true);}} >
         withdraw
       </Button>}
-      <Button withdraw={false} onClick={() => {setPickedBot(bot_object);setShowInvestModal(true)}} >
+      <Button onMouseEnter={() => setHoveringButtons(true)} onMouseLeave={() => setHoveringButtons(false)}
+      withdraw={false} onClick={() => {setPickedBot(bot_object);setShowInvestModal(true)}} >
         <InvestIcon />
         Invest
       </Button>
@@ -40,7 +42,6 @@ outline: none;
 border-radius: ${SIZING.px96};
 transition: 0.4s ease-in-out;
 cursor: pointer;
-
 &:hover{
 background-color: ${(props) => props.withdraw ? COLORS.Black800 : (props.myBots ? COLORS.StandardWhiteDefault : COLORS.DartmouthGreen900Default)};
 }

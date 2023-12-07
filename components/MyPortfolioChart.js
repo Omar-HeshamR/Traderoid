@@ -3,10 +3,8 @@ import styled from 'styled-components';
 import { COLORS } from '@/library/theme';
 import { SIZING } from '@/library/sizing';
 import { Line, Doughnut } from 'react-chartjs-2';
-import Chart from 'chart.js/auto';
 import { MyPortfolioChartCurrentBalanceSpan, MyPortfolioChartCurrentBalanceNumber,
-MyPortfolioChartDollarSignSpan,MyPortfolioChartSelectedToggleSpan, 
-MyPortfolioChartUnselectedToggleSpan } from '@/library/typography';
+MyPortfolioChartDollarSignSpan } from '@/library/typography';
 import { MdArrowDropDownCircle } from "react-icons/md";
 
 
@@ -71,7 +69,6 @@ const MyPortfolioChart = ({total_invesment_amount , nftData}) => {
       },
     ],
   };
-
 
   const allocationOptions = {
     plugins: {
@@ -184,11 +181,10 @@ const MyPortfolioChart = ({total_invesment_amount , nftData}) => {
       )}
 
       {selectedItem === 'Allocation' && (
-        <ChartWrapper>
+        <AllocationChartWrapper>
           <Doughnut data={allocationData} options={allocationOptions}/>
-        </ChartWrapper>
+        </AllocationChartWrapper>
       )}
-    
       
     </Section>
   );
@@ -283,6 +279,13 @@ width: 100%;
 height: ${SIZING.px416};
 `
 
+const AllocationChartWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+width: 100%; 
+height: ${SIZING.px416};
+`
 
 export default MyPortfolioChart
 

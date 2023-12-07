@@ -13,6 +13,7 @@ import LINK from '@/public/images/assets/LINK.webp'
 import MANA from '@/public/images/assets/MANA.webp'
 import MATIC from '@/public/images/assets/MATIC.webp'
 import UNI from '@/public/images/assets/UNI.webp'
+import AVAX from '@/public/images/assets/AVAX.webp'
 
 
 const BotStatsModel = () => {
@@ -31,6 +32,7 @@ const BotStatsModel = () => {
 //   console.log(pickedBot?.assets)
 
   const cryptoImages = {
+    "AVAX": AVAX,
     "BTC": BTC,
     "ETH": ETH,
     "LINK": LINK,
@@ -104,6 +106,22 @@ const BotStatsModel = () => {
                         
                         <BalanceRowsColumn>
 
+                        <MasterRow>
+                            <BalanceRow>
+                                AVAX:
+                            <AmountRow>
+                                100
+                                <Image src={AVAX} alt='AVAX' />
+                            </AmountRow>
+                            </BalanceRow>
+                            <BalanceRow>
+                                Value:
+                            <AmountRow>
+                                5,500&nbsp;USD                                 
+                            </AmountRow>
+                            </BalanceRow>
+                        </MasterRow>
+
                         {pickedBot?.assets.map((asset) => (
                             <MasterRow key={asset}>
                                 <BalanceRow>
@@ -116,7 +134,7 @@ const BotStatsModel = () => {
                                 <BalanceRow>
                                 Value:
                                 <AmountRow>
-                                    5,500&nbsp;$                                  
+                                    5,500&nbsp;USD                                 
                                 </AmountRow>
                                 </BalanceRow>
                             </MasterRow>
@@ -127,7 +145,7 @@ const BotStatsModel = () => {
                         <TotalValue>
                             Total wallet value:
                             <TotalValueAmount>
-                                5,500&nbsp;$
+                                5,500&nbsp;USD
                             </TotalValueAmount>
                         </TotalValue>
 
@@ -187,30 +205,31 @@ fill: ${COLORS.Black400};
 const BottomContent = styled.div`
 display: flex;
 flex-direction: column;
-padding-top: ${SIZING.px24};
+padding-top: ${SIZING.px16};
 padding-left: ${SIZING.px32};
 padding-right: ${SIZING.px32};
-padding-bottom: ${SIZING.px32};
+padding-bottom: ${SIZING.px24};
 `
 const AddressRowColumn = styled.div`
 display: flex;
 flex-direction: column;
-gap: ${SIZING.px4};
+gap: ${SIZING.px8};
 `
 const AddressRow = styled.div`
 display: flex;
 align-items: center;
 justify-content: space-between;
 font-size: ${SIZING.px16};
-color: ${COLORS.Black500};
+color: ${COLORS.Black200};
 letter-spacing: -0.02rem;
+font-family: "Uncut Sans Medium";
 `
 const RightRow = styled.div`
 display: flex;
 align-items: center;
 gap: ${SIZING.px8};
 font-size: ${SIZING.px14};
-color: ${COLORS.Black200};
+color: ${COLORS.Black600};
 `
 const ContentCopyIcon = styled(MdContentCopy)`
 font-size: ${SIZING.px16};
@@ -226,30 +245,34 @@ fill: ${COLORS.StandardWhiteDefault};
 const FeeRow = styled.div`
 display: flex;
 align-items: center;
-gap: ${SIZING.px16};
-margin-top: ${SIZING.px16};
+justify-content: center;
+gap: ${SIZING.px32};
+margin-top: ${SIZING.px12};
+padding-top: ${SIZING.px12};
+padding-bottom: ${SIZING.px12};
+border-top: 1px solid ${COLORS.Black800};
+border-bottom: 1px solid ${COLORS.Black800};
 `
 const Fee = styled.div`
 display: flex;
 align-items: center;
 justify-content: center;
-font-size: ${SIZING.px16};
-color: ${COLORS.Black500};
-letter-spacing: -0.02rem;
-`
-const FeeRate = styled.div`
-font-size: ${SIZING.px16};
+font-size: ${SIZING.px12};
 color: ${COLORS.Black200};
 font-family: "Uncut Sans Medium";
-letter-spacing: -0.04rem;
+`
+const FeeRate = styled.div`
+font-size: ${SIZING.px12};
+color: ${COLORS.Black500};
 `
 const Description = styled.p`
-max-height: ${SIZING.px128};
+max-height: ${SIZING.px96};
 line-height: 120%;
-margin-top: ${SIZING.px16};
+margin-top: ${SIZING.px12};
 overflow-y: scroll;
-font-size: ${SIZING.px14};
-color: ${COLORS.Black200};
+font-size: ${SIZING.px12};
+// border-bottom: 1px solid ${COLORS.Black800};
+color: ${COLORS.Black400};
 font-family: "Uncut Sans Regular";
 letter-spacing: 0rem;
 
@@ -265,22 +288,24 @@ background-color: ${COLORS.Black800};
 scrollbar-width: auto;
 `
 const BalancesHeader = styled.span`
-margin-top: ${SIZING.px32};
-font-size: ${SIZING.px24};
-letter-spacing: -0.04rem;
-font-family: "Uncut Sans Semibold";
-color: ${COLORS.Black200};
+margin-top: ${SIZING.px24};
+font-size: ${SIZING.px16};
+padding-bottom: ${SIZING.px12};
+letter-spacing: -0.01rem;
+font-family: "Uncut Sans Medium";
+// border-bottom: 1px solid ${COLORS.Black800};
+color: ${COLORS.Black300};
 `
 const BalanceRowsColumn = styled.div`
 display: flex;
 flex-direction: column;
-margin-top: ${SIZING.px16};
-gap: ${SIZING.px8};
+margin-top: ${SIZING.px12};
+gap: ${SIZING.px6};
 `
 const MasterRow = styled.div`
 display: flex;
 align-items: center;
-gap: ${SIZING.px64};
+gap: ${SIZING.px32};
 `
 const BalanceRow = styled.div`
 display: flex;
@@ -288,50 +313,53 @@ align-items: center;
 justify-content: space-between;
 width: 50%;
 letter-spacing: -0.02rem;
-font-size: ${SIZING.px20};
+font-size: ${SIZING.px14};
 font-family: "Uncut Sans Regular";
 color: ${COLORS.Black200};
 `
 const AmountRow = styled.div`
 display: flex;
 align-items: center;
-gap: ${SIZING.px4};
-font-size: ${SIZING.px20};
+gap: ${SIZING.px8};
+font-size: ${SIZING.px14};
 font-family: "Uncut Sans Medium";
 color: ${COLORS.Black100};
 
 img{
-width: ${SIZING.px20};
-height: ${SIZING.px20};
+width: ${SIZING.px14};
+height: ${SIZING.px14};
+opacity: 0.8;
 }
 `
 const TotalValue = styled.div`
 display: flex;
 align-items: center;
 justify-content: space-between;
-margin-top: ${SIZING.px16};
+margin-top: ${SIZING.px12};
+padding-top: ${SIZING.px12};
 letter-spacing: -0.02rem;
-font-size: ${SIZING.px24};
-font-family: "Uncut Sans Regular";
-color: ${COLORS.Black200};
+font-size: ${SIZING.px16};
+font-family: "Uncut Sans Medium";
+color: ${COLORS.Black500};
+border-top: 1px solid ${COLORS.Black800};
 `
 const TotalValueAmount = styled.span`
 display: flex;
-font-size: ${SIZING.px24};
-font-family: "Uncut Sans Medium";
-color: ${COLORS.Black100};
+font-size: ${SIZING.px16};
+font-family: "Uncut Sans Semibold";
+color: ${COLORS.StandardWhiteDefault};
 `
 const InvestButton = styled.button`
 margin-top: ${SIZING.px24};
 padding: ${SIZING.px12} ${SIZING.px24};
 letter-spacing: -0.04rem;
-font-size: ${SIZING.px24};
+font-size: ${SIZING.px20};
 background-color: ${COLORS.DartmouthGreen800};
 border-radius: ${SIZING.px24};
 font-family: "Uncut Sans Semibold";
 border: none;
 outline: none;
-transition: 0.4s ease-in-out;
+transition: 0.2s ease-in-out;
 cursor: pointer;
 
 &:hover{

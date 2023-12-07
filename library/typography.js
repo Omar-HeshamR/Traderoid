@@ -191,9 +191,9 @@ export const ModalTopBannerHeader = styled.span`
 width: 90%;
 line-height: normal;
 font-size: ${SIZING.px24};
-letter-spacing: -0.1rem;
-color: ${COLORS.Black200};
-font-family: "Uncut Sans Medium";
+letter-spacing: -0.05rem;
+color: ${COLORS.StandardWhiteDefault};
+font-family: "Uncut Sans Semibold";
 overflow-x: scroll;
 -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 95%, rgba(0, 0, 0, 0) 100%);
 mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 95%, rgba(0, 0, 0, 0) 100%);

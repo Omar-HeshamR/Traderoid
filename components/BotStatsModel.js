@@ -15,8 +15,7 @@ import MANA from '@/public/images/assets/MANA.webp'
 import MATIC from '@/public/images/assets/MATIC.webp'
 import UNI from '@/public/images/assets/UNI.webp'
 import AVAX from '@/public/images/assets/AVAX.webp'
-import { NATIVE_TOKEN_ADDRESS } from "@thirdweb-dev/sdk";
-import { useSigner, useBalance } from '@thirdweb-dev/react'
+import { useSigner } from '@thirdweb-dev/react'
 import { PULL_LATEST_PRICES_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES'
 
 const BotStatsModel = () => {
@@ -27,6 +26,7 @@ const BotStatsModel = () => {
 
   const priceContractAbi = [ "function getLatestAnswers() public view returns (int[])" ];
   const tokenAbi = ["function balanceOf(address owner) view returns (uint256)"];
+
   const tokenAddresses = {
     BTC: "0x3ed272fa7054a80C5650fCB3788dA000a4EED711",
     ETH: "0x3766E946C57d281139fAB9656CE50f535E0DfB4d",

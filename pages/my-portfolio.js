@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import LeftBar from '@/components/LeftBar'
 import TopBar from '@/components/TopBar'
+import Chart from 'chart.js/auto'
 import { COLORS } from '@/library/theme';
 import { SIZING } from '@/library/sizing';
 import {Section, ScrollableContainer, CardGrid} from '@/library/structure'

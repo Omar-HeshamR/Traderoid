@@ -6,6 +6,7 @@ import { COLORS } from "@/library/theme";
 import { StateContext } from "@/context/StateContext";
 import WithdrawModal from '@/components/WithdrawModal'
 import InvestModal from '@/components/InvestModal';
+import BotStatsModel from "@/components/BotStatsModel";
 import Head from "next/head";
 
 export const GlobalStyle = createGlobalStyle`
@@ -74,6 +75,7 @@ export default function App({ Component, pageProps }) {
       >
         <WithdrawModal />
         <InvestModal />
+        <BotStatsModel />
         <Component {...pageProps} />
       </ThirdwebProvider>
     </StateContext>

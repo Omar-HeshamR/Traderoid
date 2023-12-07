@@ -21,5 +21,6 @@ px192: "12rem",
 px256: "16rem",
 px352: "22rem",
 px416: "26rem",
-px480: "30rem"
+px480: "30rem",
+px640: "40rem"
 }

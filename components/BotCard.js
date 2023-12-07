@@ -16,8 +16,13 @@ import ButtonRenderer from './ButtonRenderer'
 import { useAddress, useSigner } from '@thirdweb-dev/react';
 import TraderoidAccountABI from "@/contracts/abi/TraderoidAccountABI.json"
 import { ethers } from 'ethers';
+import { useStateContext } from '@/context/StateContext';;
+
 
 const BotCard = ({ bot_object, myPortfolio }) => {
+
+    const { showBotStatsModal, setShowBotStatsModal, setPickedBot } = useStateContext();
+
 
     // MAIN VARIBLES
     const [ hasInvested, setHasInvested ] = useState(false);
@@ -64,7 +69,7 @@ const BotCard = ({ bot_object, myPortfolio }) => {
 
   return (
     <>      
-        <Container>
+        <Container onClick={() => {setPickedBot(bot_object);setShowBotStatsModal(true);}}>
             <TopContainer>
                 <UppermostRow>
                     <BotCardManager>

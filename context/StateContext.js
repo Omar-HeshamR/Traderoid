@@ -7,6 +7,7 @@ export const StateContext = ({ children }) => {
     const [ pickedBot, setPickedBot ] = useState(undefined);
     const [ showInvestModal, setShowInvestModal ] = useState(false)
     const [ showWithdrawModal, setShowWithdrawModal ] = useState(false)
+    const [ showBotStatsModal, setShowBotStatsModal ] = useState(false)
 
 return(
     <Context.Provider
@@ -16,7 +17,9 @@ return(
         showInvestModal, 
         setShowInvestModal,
         showWithdrawModal, 
-        setShowWithdrawModal
+        setShowWithdrawModal,
+        showBotStatsModal,
+        setShowBotStatsModal
     }}
     >
       {children}

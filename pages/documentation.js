@@ -45,7 +45,7 @@ const Documentation = () => {
                 <SectionHeader id='1'>Proccess Overview</SectionHeader>
                 <Pargraph>In this documentation we will take you a step by step on how to create your own
                     decentralized transparent crypto trading bot NFT. The proccess is pretty straightforward,
-                    the NFT has it's own wallet and the wallet has 3 main functionalities, invest, withdraw, 
+                    the NFT has it{"'"}s own wallet and the wallet has 3 main functionalities, invest, withdraw, 
                     and execute trade.
                 </Pargraph>
                 <Pargraph>Below is a diagram showing the proccess from start to finish, though 
@@ -54,7 +54,7 @@ const Documentation = () => {
                 <ChartImage>
                     <Image src={TraderoidChart}
                         alt="Traderoid Chart" 
-                        height={431}
+                        // height={431}
                     />
                 </ChartImage>
                 <Pargraph>As you can see from the chart the proccess starts out with the Traderoid Contract.
@@ -433,18 +433,22 @@ const CodeSnippet = styled.pre`
   font-weight: bold;
   padding: ${SIZING.px24} 0;
   border-radius: 4px;
-//   overflow: hidden;
   white-space: pre-wrap;
   word-wrap: break-word;
   margin-bottom: ${SIZING.px24};
-`;
+`
 
 const ChartImage = styled.div`
-object-fit: contain;
+display: flex;
 width: 80%; 
 margin-bottom: ${SIZING.px24};
-border: 0.1vw solid white;
-height: auto; // Set a specific height for the container
+
+img{
+display: block;
+width: 100%;
+height: auto;
+border: 1px solid ${COLORS.Black100};
+}
 `
 
 export default Documentation

@@ -194,7 +194,7 @@ flex-grow: 1;
 padding-left: ${SIZING.px24};
 padding-right: ${SIZING.px24};
 padding-top: ${SIZING.px16};
-padding-bottom: ${SIZING.px24};
+padding-bottom: ${SIZING.px16};
 `
 const AssetsRow = styled.div`
 display: flex;
@@ -217,7 +217,7 @@ const BottommostRow = styled.div`
 display: flex;
 justify-content: space-between;
 align-items: center;
-margin-top: auto;
+margin-top: ${SIZING.px12};
 `
 const FeeColumn = styled.div`
 display: flex;

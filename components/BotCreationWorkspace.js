@@ -176,10 +176,13 @@ const BotCreationWorkspace = () => {
                     </SelectedItemRow>
                     <Select onChange={(e) => handleTagSelect(e.target.value)}>
                     <DeselectedOption></DeselectedOption>
+                    <Option value="Mean reversion">Mean reversion</Option>
                     <Option value="Risky">Risky</Option>
+                    <Option value="Rebalancing">Rebalancing</Option>
                     <Option value="Analytical">Analytical</Option>
-                    <Option value="Trending">Trending</Option>
-                    <Option value="2023">2023</Option>
+                    <Option value='Sentiment Analysis'>Sentiment Analysis</Option>
+                    <Option value="Aggressive">Aggressive</Option>
+                    <Option value="Trend Following">Trend Following</Option>
                     <Option value="Stable">Stable</Option>
                     <Option value="Dynamic">Dynamic</Option>
                     </Select>

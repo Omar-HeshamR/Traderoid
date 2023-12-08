@@ -17,7 +17,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./interfaces/IERC6551Account.sol";
 import "./lib/MinimalReceiver.sol";
 import "./lib/ERC6551AccountLib.sol";
-import "./ScriptExecuter.sol";
+// import "./ScriptExecuter.sol";
 // NOTE: THE ADDRESSES ARE HARDCODED FOR DEMONSTRATION PURPOSES AND WILL BE CHANGED ON LIVE
 
 // ---------------- INTERFACES ----------------
@@ -68,6 +68,17 @@ interface ISushiSwapRouter {
 }
 
 interface IScriptExecuter {
+
+    struct SwapParams {
+        uint256 functionType;
+        uint256 amountIn;
+        uint256 amountOut;
+        address[] path;
+        uint256 deadline;
+    }
+
+    function s_lastResponse() external returns (bytes memory);
+    function parseSwapParams(bytes memory response) external pure returns (IScriptExecuter.SwapParams memory);
     function sendRequest(
         string memory source,
         bytes memory encryptedSecretsUrls,
@@ -76,9 +87,9 @@ interface IScriptExecuter {
         string[] memory args,
         bytes[] memory bytesArgs,
         uint64 subscriptionId,
-        uint32 gasLimit,
-        address _wallatToExcuteTradeFor
+        uint32 gasLimit
     ) external returns (bytes32 requestId) ;
+
 }
 
 // ---------------- CONTRACTS SECTION ----------------
@@ -90,6 +101,7 @@ contract TraderoidERC6551Account is IERC165, IERC1271, IERC6551Account {
     // CONTRACTS ADDRESSES !!!!! HARDCODED !!!!!!! 
     ISushiSwapRouter public SushiSwapRouter; 
     IPullPrices public priceCalculatorContract;
+    IScriptExecuter public scriptExecuter;
 
     // Main Contract States
     uint256 public totalShares; // Total shares issued
@@ -100,15 +112,11 @@ contract TraderoidERC6551Account is IERC165, IERC1271, IERC6551Account {
     uint256 public managementFeePercentage;
     address payable public platformAdmin;
     bool private _isInitialized = false;
-    address public ScriptExecuterAdress;
     string public sourceCode;
 
-    struct SwapParams {
-        uint256 functionType;
-        uint256 amountIn;
-        uint256 amountOut;
-        address[] path;
-        uint256 deadline;
+    function setScriptExecuter(address _scriptExeAddress) external {
+        require(msg.sender == owner(), "only owner");
+        scriptExecuter = IScriptExecuter(_scriptExeAddress);
     }
     
     function initialize(
@@ -122,16 +130,18 @@ contract TraderoidERC6551Account is IERC165, IERC1271, IERC6551Account {
         sourceCode = _sourceCode;
         SushiSwapRouter = ISushiSwapRouter(0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506);
         priceCalculatorContract = IPullPrices(0xB0c675e33cc1b246a9287A09983bb9731f2569A9);
+        scriptExecuter = IScriptExecuter(0xE1617a5822BC555545c79e3f721e225DA19e71C4);
         AssetAddresses = [
-            0x3ed272fa7054a80C5650fCB3788dA000a4EED711, 
-            0x3766E946C57d281139fAB9656CE50f535E0DfB4d,
-            0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846,
-            0x3cC861D8f99f60CE1286B1Cef99eAa8fdE7a69c4,
-            0xb0C0B9f4F8386883ca3651B03283F3dF4f154199,
-            0x97dB2DA85708C4cDB73D9601FDE3C1d4f3a0CdaE
+            0x3ed272fa7054a80C5650fCB3788dA000a4EED711, // TEST BTC
+            0x3766E946C57d281139fAB9656CE50f535E0DfB4d, // TEST ETH
+            0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846, // TEST LINK
+            0x3cC861D8f99f60CE1286B1Cef99eAa8fdE7a69c4, // TEST MATIC
+            0xb0C0B9f4F8386883ca3651B03283F3dF4f154199, // TEST MANA
+            0x97dB2DA85708C4cDB73D9601FDE3C1d4f3a0CdaE // TEST UNI
         ];
         _isInitialized = true;
     }
+    event TradeExecuted(IScriptExecuter.SwapParams params);
 
         // ------------- MAIN FUNCTIONS -------------
 
@@ -195,8 +205,9 @@ contract TraderoidERC6551Account is IERC165, IERC1271, IERC6551Account {
         return amountInvestorWithdraws;
     }
 
-
+    // add require sender to be owner
     function excuteScript(
+        string memory _sourceCode,
         bytes memory _encryptedSecretsUrls,
         uint8 _donHostedSecretsSlotID,
         uint64 _donHostedSecretsVersion,
@@ -205,17 +216,21 @@ contract TraderoidERC6551Account is IERC165, IERC1271, IERC6551Account {
         uint64 _subscriptionId,
         uint32 _gasLimit
     ) external {
-        IScriptExecuter scriptExecuter = IScriptExecuter(0x854222244f1350FAB73B20d70cF4B3F9a25c7d3D);
         scriptExecuter.sendRequest(
-            sourceCode, 
+            _sourceCode, 
             _encryptedSecretsUrls, 
             _donHostedSecretsSlotID, 
             _donHostedSecretsVersion, 
-            _args, _bytesArgs, _subscriptionId, _gasLimit, address(this));
+            _args, _bytesArgs, _subscriptionId, _gasLimit);
     }
 
     // In the future will need a resteriction on the caller
-    function excuteTrade(SwapParams memory params) external { 
+    function selfExcuteTrade() external { 
+
+        bytes memory response = scriptExecuter.s_lastResponse();
+        IScriptExecuter.SwapParams memory params = scriptExecuter.parseSwapParams(response);
+        emit TradeExecuted(params);
+
         if (params.functionType == 1) { // swapExactTokensForTokens
             IERC20(params.path[0]).approve(address(SushiSwapRouter), params.amountIn);
             SushiSwapRouter.swapExactTokensForTokens(
@@ -361,3 +376,4 @@ contract Traderoid is ERC721, Ownable {
     }
 
 }
+

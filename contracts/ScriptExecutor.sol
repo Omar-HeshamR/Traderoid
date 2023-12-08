@@ -13,7 +13,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  */
 
 interface ITraderoidERC6551Account {
-
     struct SwapParams {
         uint256 functionType;
         uint256 amountIn;
@@ -21,8 +20,6 @@ interface ITraderoidERC6551Account {
         address[] path;
         uint256 deadline;
     }
-
-    function excuteTrade(SwapParams memory params) external;
 }
 
 contract ScriptExecuter is FunctionsClient, ConfirmedOwner {
@@ -33,7 +30,6 @@ contract ScriptExecuter is FunctionsClient, ConfirmedOwner {
     bytes32 public s_lastRequestId;
     bytes public s_lastResponse;
     bytes public s_lastError;
-    address public wallatToExcuteTradeFor;
     string public latestSource;
 
     error UnexpectedRequestID(bytes32 requestId);
@@ -64,11 +60,9 @@ contract ScriptExecuter is FunctionsClient, ConfirmedOwner {
         string[] memory args,
         bytes[] memory bytesArgs,
         uint64 subscriptionId,
-        uint32 gasLimit,
-        address _wallatToExcuteTradeFor
+        uint32 gasLimit
     ) external returns (bytes32 requestId) {
         FunctionsRequest.Request memory req;
-        wallatToExcuteTradeFor = _wallatToExcuteTradeFor;
         latestSource = source;
         req.initializeRequestForInlineJavaScript(source);
         if (encryptedSecretsUrls.length > 0)
@@ -129,11 +123,6 @@ contract ScriptExecuter is FunctionsClient, ConfirmedOwner {
         s_lastResponse = response;
         s_lastError = err;
         emit Response(requestId, s_lastResponse, s_lastError);
-
-        // my stuff
-        ITraderoidERC6551Account.SwapParams memory params = parseSwapParams(s_lastResponse);
-        ITraderoidERC6551Account wallet = ITraderoidERC6551Account(wallatToExcuteTradeFor);
-        wallet.excuteTrade(params);
     }
 
     // HELPER FUNCTIONS ( SUPER COMPUTATIONALLY EXPENSIVE, NEED A CHEAPER METHOD )
@@ -240,3 +229,71 @@ contract ScriptExecuter is FunctionsClient, ConfirmedOwner {
     }
 
 }
+
+
+// FOR TESTING
+/**
+    function sendRequestHardCodedBig(
+        bytes memory encryptedSecretsUrls,
+        uint8 donHostedSecretsSlotID,
+        uint64 donHostedSecretsVersion,
+        string[] memory args,
+        bytes[] memory bytesArgs,
+        uint64 subscriptionId,
+        uint32 gasLimit
+    ) external returns (bytes32 requestId) {
+        string memory source = "const funcType='1';const amountIn='10000000000000000';const amountOutMin = '0';const address1 = '0xd00ae08403B9bbb9124bB305C09058E32C39A48c';const address2 = '0x97dB2DA85708C4cDB73D9601FDE3C1d4f3a0CdaE';const deadline='100000000000000000';const string=`${funcType}#${amountIn}#${amountOutMin}#${address1}#${address2}#${deadline}`;return Functions.encodeString(string);";
+        FunctionsRequest.Request memory req;
+        latestSource = source;
+        req.initializeRequestForInlineJavaScript(source);
+        if (encryptedSecretsUrls.length > 0)
+            req.addSecretsReference(encryptedSecretsUrls);
+        else if (donHostedSecretsVersion > 0) {
+            req.addDONHostedSecrets(
+                donHostedSecretsSlotID,
+                donHostedSecretsVersion
+            );
+        }
+        if (args.length > 0) req.setArgs(args);
+        if (bytesArgs.length > 0) req.setBytesArgs(bytesArgs);
+        s_lastRequestId = _sendRequest(
+            req.encodeCBOR(),
+            subscriptionId,
+            gasLimit,
+            donID
+        );
+        return s_lastRequestId;
+    }
+
+    function sendRequestHardCoded(
+        bytes memory encryptedSecretsUrls,
+        uint8 donHostedSecretsSlotID,
+        uint64 donHostedSecretsVersion,
+        string[] memory args,
+        bytes[] memory bytesArgs,
+        uint64 subscriptionId,
+        uint32 gasLimit
+    ) external returns (bytes32 requestId) {
+        string memory source = "return Functions.encodeString('lol');";
+        FunctionsRequest.Request memory req;
+        latestSource = source;
+        req.initializeRequestForInlineJavaScript(source);
+        if (encryptedSecretsUrls.length > 0)
+            req.addSecretsReference(encryptedSecretsUrls);
+        else if (donHostedSecretsVersion > 0) {
+            req.addDONHostedSecrets(
+                donHostedSecretsSlotID,
+                donHostedSecretsVersion
+            );
+        }
+        if (args.length > 0) req.setArgs(args);
+        if (bytesArgs.length > 0) req.setBytesArgs(bytesArgs);
+        s_lastRequestId = _sendRequest(
+            req.encodeCBOR(),
+            subscriptionId,
+            gasLimit,
+            donID
+        );
+        return s_lastRequestId;
+    }
+ */

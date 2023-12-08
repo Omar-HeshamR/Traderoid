@@ -5,8 +5,9 @@ import {Section, ScrollableContainer, CardGrid} from '@/library/structure'
 import BotCard from '@/components/BotCard'
 import TradioABI from "@/contracts/abi/TraderoidABI.json"
 import { Traderiod_NFT_CONTRACT_ADDRESS } from '@/CENTERAL_VALUES';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { useStorage, useSigner } from '@thirdweb-dev/react';
+import poolABI from "@/contracts/abi/PoolABI.json"
 
 const Marketplace = () => {
   
@@ -35,13 +36,13 @@ const Marketplace = () => {
   }, [signer])
 
   return (
-    <Section>
+    <Section >
 
       <LeftBar selected="marketplace"/>
 
       <ScrollableContainer>
 
-        <TopBar header="Explore trending bots" type="filter"/>
+        <TopBar header="Explore trending bots" type="filter" />
 
         <CardGrid>
           {nftData.length > 0 ?

@@ -171,8 +171,9 @@ const BotStatsModel = () => {
                                 <BalanceRow>
                                 Value:
                                 <AmountRow>
-                                    {Number(asset.balance * asset.price).toFixed(3)}&nbsp;USD                                 
-                                </AmountRow>
+                                {new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 3 }).format(
+            asset.balance * asset.price)}&nbsp;USD 
+            </AmountRow>
                                 </BalanceRow>
                             </MasterRow>
                             }</>
@@ -183,7 +184,8 @@ const BotStatsModel = () => {
                         <TotalValue>
                             Total wallet value:
                             <TotalValueAmount>
-                                {Number(balanceSheet.reduce((total, item) => {return total + (item.balance * item.price)}, 0)).toFixed(5)}&nbsp;USD
+                            {new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(
+    balanceSheet.reduce((total, item) => total + (item.balance * item.price), 0))}&nbsp;USD
                             </TotalValueAmount>
                         </TotalValue>
 
@@ -358,6 +360,7 @@ display: flex;
 align-items: center;
 gap: ${SIZING.px8};
 font-size: ${SIZING.px14};
+letter-spacing: 0.10rem;
 font-family: "Uncut Sans Medium";
 color: ${COLORS.Black100};
 
@@ -373,7 +376,7 @@ align-items: center;
 justify-content: space-between;
 margin-top: ${SIZING.px12};
 padding-top: ${SIZING.px12};
-letter-spacing: -0.02rem;
+letter-spacing: 0.10rem;
 font-size: ${SIZING.px16};
 font-family: "Uncut Sans Medium";
 color: ${COLORS.Black500};

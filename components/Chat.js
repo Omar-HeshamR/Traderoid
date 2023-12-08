@@ -79,6 +79,13 @@ const Chat = () => {
     }
   };
 
+  const handleExampleSearchClick = (exampleSearch) => {
+    // Set the example search as the input value
+    userMessageRef.current.value = exampleSearch;
+    // Update the isTyping state based on the new input value
+    setIsTyping(userMessageRef.current.value.trim().length > 0);
+  };
+
 
   return (
     <Section>
@@ -98,7 +105,7 @@ const Chat = () => {
                     </ChatInitialScreenHeader>
                 </InitialScreenTopColumn>
                 <InitialScreenBottomGrid>
-                    <GridItem>
+                    <GridItem onClick={() => handleExampleSearchClick('Tell me about current crypto trends')}>
                         <ChatGridNormalSpan>
                             Tell me about
                         </ChatGridNormalSpan>
@@ -106,7 +113,7 @@ const Chat = () => {
                             current crypto trends
                         </ChatGridBoldSpan>
                     </GridItem>
-                    <GridItem>
+                    <GridItem onClick={() => handleExampleSearchClick('Tell me awesome bot trading strategies')}>
                         <ChatGridNormalSpan>
                             Tell me awesome 
                         </ChatGridNormalSpan>
@@ -114,7 +121,7 @@ const Chat = () => {
                             bot trading strategies
                         </ChatGridBoldSpan>
                     </GridItem>
-                    <GridItem>
+                    <GridItem onClick={() => handleExampleSearchClick('Tell me what bots are trending')}>
                         <ChatGridNormalSpan>
                             Tell me
                         </ChatGridNormalSpan>
@@ -122,7 +129,7 @@ const Chat = () => {
                             what bots are trending
                         </ChatGridBoldSpan>
                     </GridItem>
-                    <GridItem>                   
+                    <GridItem onClick={() => handleExampleSearchClick('Give me a list of online resources about bot trading')}>                   
                         <ChatGridNormalSpan>
                             Give me a list of
                         </ChatGridNormalSpan>

@@ -24,11 +24,13 @@ color: ${COLORS.Black700};
 font-family: "Uncut Sans Regular";
 `
 export const BotCardName = styled.h1`
+line-height: normal;
+white-space: nowrap;
 margin-top: ${SIZING.px8};
 font-size: ${SIZING.px36};
 letter-spacing: -0.0675rem;
 color: ${COLORS.Black100};
-overflow: scroll;
+overflow-y: scroll;
 -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 95%, rgba(0, 0, 0, 0) 100%);
 mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 95%, rgba(0, 0, 0, 0) 100%);
 `

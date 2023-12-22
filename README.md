@@ -1,8 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Getting Started
 
-First, run the development server:
+This is the Traderoid, a Decentralized algorithmic trading bot marketplace and platform.
+
+Intro Video: https://youtu.be/bIVoTpK8TCw
+
+For Remote use: https://traderoid.vercel.app ( DEPLOYED ON AVAX FUJI CHAIN )
+
+For local use, clone and run the development server:
 
 ```bash
 npm run dev
@@ -14,27 +18,18 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Inspiration
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Over the years, the investment landscape has been riddled with promises of revolutionary "next-gen trading bots" promising life-changing returns. Unfortunately, many of these turn out to be elaborate Ponzi schemes, with the infamous BitConnect scandal being a prime example. Investors lost over $2.4 billion to a purported "trading bot" that, in reality, never existed. In response to such deceptive practices, Traderoid emerged. Our platform is dedicated to fostering a new era of trading by offering a decentralized, transparent environment for creating, investing in, and withdrawing from algorithmic trading bots.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## What it does
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Traderoid revolutionizes the world of trading through its unique NFT collection, leveraging the robust Avalanche C-chain. Each NFT in this collection is not just a digital asset but also functions as an individual wallet (under the ERC6551 standard), capable of holding and managing on-chain assets. What sets these NFTs apart is their embedded JavaScript code, which dictates their trading behaviors. This on-chain script is executed using Chainlink Functions, a groundbreaking feature that enables our trading bots to access both web2 APIs and external AI models, aiding in their decentralized decision-making process. The deployment of an NFT on Traderoid allows the manager to set up automated trading strategies via Chainlink Automation's executeTrade function. This opens the door for external investors to engage with the NFT bot, allowing for both investment and withdrawal. To ensure equitable distribution of shares, the NFT bot utilizes Chainlink Data Feeds. This feature accurately assesses the current value of the wallet's tradable assets, thereby allocating shares in a fair and transparent manner. Moreover, the platform offers a smooth front-end interface for users to create, invest, withdraw, and even interact with "Droidvisor" which is powered by GPT-4 and Coinmarketcap to help you make informed decisions on the crypto market.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## How Traderoid is built
 
-## Learn More
+The frontend utilizes NextJs and ReactJs, the backend is powered by ethers, Thirdweb, OpenAI, and Coinmarketcap. The contracts are written in solidity and powered by chainlink functions, automation, and data feeds. The contracts are hosted on the avalanche C-chain.
 
-To learn more about Next.js, take a look at the following resources:
+## What's next for Traderoid
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Traderoid, currently in its functional prototype phase, is poised for transformation into a Minimum Viable Product (MVP). To achieve this milestone, several key steps are outlined. Expansion of On-Chain Capabilities: We aim to broaden the range of on-chain actions. This includes integrating a variety of routers and functions, surpassing the current offerings, to enhance the versatility and efficiency of our trading bots. Infrastructure Enhancement: Another critical step involves refining the infrastructure to support events and logs more effectively. This enhancement is vital for accurately tracking profit/loss values and integrating performance fees along with other final features. Finalizing and Securing the Platform: The last phase involves a thorough cleanup of our test contracts. This includes removing hardcoded test addresses to ensure greater flexibility and security. Subsequently, a comprehensive audit of the contract will be conducted to ensure its integrity and reliability.

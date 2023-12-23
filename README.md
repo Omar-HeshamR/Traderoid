@@ -2,11 +2,11 @@
 
 This is the Traderoid, a Decentralized algorithmic trading bot marketplace and platform.
 
-<img width="1397" alt="TraderoidChart" src="https://github.com/Omar-HeshamR/Traderoid/assets/106610412/18e7e241-6699-4e4e-89ab-0d021cf3b1b5">
-
 Intro Video: https://youtu.be/bIVoTpK8TCw
 
-For Remote use: https://traderoid.vercel.app ( DEPLOYED ON AVAX FUJI CHAIN )
+For LIVE Remote use: https://traderoid.vercel.app ( DEPLOYED ON AVAX FUJI CHAIN ) Below is an Image showcasing the underlying architecture.
+
+<img width="1397" alt="TraderoidChart" src="https://github.com/Omar-HeshamR/Traderoid/assets/106610412/18e7e241-6699-4e4e-89ab-0d021cf3b1b5">
 
 For local use, clone and run the development server:
 

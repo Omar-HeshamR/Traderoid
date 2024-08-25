@@ -48,7 +48,7 @@ const Marketplace = () => {
           {nftData.length > 0 ?
           nftData.map((botObject, index) => (
               <BotCard bot_object={botObject} key={index}/>
-          )) : <dic>Loading Traderoids...</dic>}
+          )) : <dic>Please connect your wallet or connect with a guest wallet to see Traderoids...</dic>}
         </CardGrid>
 
       </ScrollableContainer>
